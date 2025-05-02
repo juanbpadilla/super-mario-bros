@@ -1,4 +1,7 @@
 /* global Phaser */
+
+import { createAnimations } from './animations.js' // Importar la función createAnimations desde el archivo animations.js.
+
 /**
  * Phaser es una librería de JavaScript para crear juegos en 2D.
  * Al importar el archivo Phaser.js, se puede utilizar la clase Phaser.Game para crear un nuevo juego.
@@ -74,25 +77,7 @@ function create() { // 2.
   this.cameras.main.setBounds(0, 0, 2000, config.height) // Establecer los límites de la cámara.
   this.cameras.main.startFollow(this.mario) // Hacer que la cámara siga a Mario.
 
-  this.anims.create({
-    key: 'mario-walk',
-    frames: this.anims.generateFrameNumbers(
-      'mario',
-      { start: 1, end: 3 } // Generar fotogramas de la animación desde el sprite Mario.
-    ),
-    frameRate: 12, // Velocidad de la animación (fotogramas por segundo).
-    repeat: -1 // Repetir la animación indefinidamente.
-  })
-
-  this.anims.create({
-    key: 'mario-idle',
-    frames: [{ key: 'mario', frame: 0 }]
-  })
-
-  this.anims.create({
-    key: 'mario-jump',
-    frames: [{ key: 'mario', frame: 5 }]
-  })
+  createAnimations(this) // Crear las animaciones de Mario.
 
   this.keys = this.input.keyboard.createCursorKeys() // Crear las teclas de dirección para el control del juego.
 }
