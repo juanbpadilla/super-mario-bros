@@ -47,8 +47,16 @@ function create() { // 2.
   this.add.tileSprite(0, config.height - 32, config.width, 32, 'floorbricks')
     .setOrigin(0, 0)
 
-  this.add.sprite(50, 210, 'mario')
+  this.mario = this.add.sprite(50, 210, 'mario')
     .setOrigin(0, 1)
+
+  this.keys = this.input.keyboard.createCursorKeys() // Crear las teclas de dirección para el control del juego.
 }
 
-function update() {}
+function update() {
+  if (this.keys.left.isDown) {
+    this.mario.x -= 2
+  } else if (this.keys.right.isDown) {
+    this.mario.x += 2
+  }
+}
