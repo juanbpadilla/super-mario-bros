@@ -50,13 +50,28 @@ function create() { // 2.
   this.mario = this.add.sprite(50, 210, 'mario')
     .setOrigin(0, 1)
 
+  this.anims.create({
+    key: 'mario-walk',
+    frames: this.anims.generateFrameNumbers(
+      'mario',
+      { start: 1, end: 3 } // Generar fotogramas de la animación desde el sprite Mario.
+    ),
+    frameRate: 12, // Velocidad de la animación (fotogramas por segundo).
+    repeat: -1 // Repetir la animación indefinidamente.
+  })
+
   this.keys = this.input.keyboard.createCursorKeys() // Crear las teclas de dirección para el control del juego.
 }
 
 function update() {
   if (this.keys.left.isDown) {
+    this.mario.anims.play('mario-walk', true)
     this.mario.x -= 2
   } else if (this.keys.right.isDown) {
+    this.mario.anims.play('mario-walk', true)
     this.mario.x += 2
+  } else {
+    this.mario.anims.stop()
+    this.mario.setFrame(0) // Detener la animación y establecer el primer fotograma.
   }
 }
