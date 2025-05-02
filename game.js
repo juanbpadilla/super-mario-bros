@@ -95,7 +95,7 @@ function update() {
     this.mario.anims.play('mario-walk', true)
     this.mario.x += 2
     this.mario.flipX = false // Restaurar la orientación original del sprite de Mario.
-  } else {
+  } else if(this.mario.body.touching.down) {
     this.mario.anims.play('mario-idle', true) // Reproducir la animación de inactividad.
   }
 
