@@ -60,6 +60,11 @@ function create() { // 2.
     repeat: -1 // Repetir la animación indefinidamente.
   })
 
+  this.anims.create({
+    key: 'mario-idle',
+    frames: [{ key: 'mario', frame: 0 }]
+  })
+
   this.keys = this.input.keyboard.createCursorKeys() // Crear las teclas de dirección para el control del juego.
 }
 
@@ -71,7 +76,8 @@ function update() {
     this.mario.anims.play('mario-walk', true)
     this.mario.x += 2
   } else {
-    this.mario.anims.stop()
-    this.mario.setFrame(0) // Detener la animación y establecer el primer fotograma.
+    // this.mario.anims.stop()
+    // this.mario.setFrame(0) // Detener la animación y establecer el primer fotograma.
+    this.mario.anims.play('mario-idle', true) // Reproducir la animación de inactividad.
   }
 }
