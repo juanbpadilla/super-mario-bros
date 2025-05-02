@@ -8,7 +8,7 @@ const config = {
   type: Phaser.AUTO, // Tipo de renderizado (WebGL o Canvas) especificado automáticamente por Phaser.
   width: 256,
   height: 244,
-  backgroundColor: "#fff",
+  backgroundColor: "#049cd8",
   parent: "game", // ID del elemento HTML donde se renderizará el juego.
   scene: {
     preload, // Método para cargar recursos antes de iniciar el juego.
@@ -18,13 +18,28 @@ const config = {
 }
 
 new Phaser.Game(config) // Crear una nueva instancia del juego con la configuración especificada.
+//  this -> game -> el juego que estamos construyendo
 
 function preload() { // 1.
-  console.log("preload")
+  this.load.image(
+    'cloud1',
+    'assets/scenery/overworld/cloud1.png'
+  )
+
+  this.load.spritesheet(
+    'mario',  // <-- id-del-asset
+    'assets/entities/mario.png',
+    { frameWidth: 18, frameHeight: 16 }
+  )
 }
 
 function create() { // 2.
-  console.log("create")
+  //  image(x, y, id-del-asset)
+  this.add.image(100, 50, 'cloud1')
+    .setOrigin(0, 0) // Cambia el origen de la imagen a la esquina superior izquierda.
+    .setScale(0.15)
+
+  this.add.sprite(50, 200, 'mario')
 }
 
 function update() {}
