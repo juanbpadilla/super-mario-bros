@@ -72,9 +72,11 @@ function update() {
   if (this.keys.left.isDown) {
     this.mario.anims.play('mario-walk', true)
     this.mario.x -= 2
+    this.mario.flipX = true // Voltear el sprite de Mario horizontalmente.
   } else if (this.keys.right.isDown) {
     this.mario.anims.play('mario-walk', true)
     this.mario.x += 2
+    this.mario.flipX = false // Restaurar la orientación original del sprite de Mario.
   } else {
     // this.mario.anims.stop()
     // this.mario.setFrame(0) // Detener la animación y establecer el primer fotograma.
