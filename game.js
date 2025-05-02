@@ -46,6 +46,8 @@ function preload() { // 1.
     'assets/entities/mario.png',
     { frameWidth: 18, frameHeight: 16 }
   )
+
+  this.load.audio('gameover', 'assets/sound/music/gameover.mp3')
 }
 
 function create() { // 2.
@@ -106,6 +108,7 @@ function update() {
     this.mario.isDead = true
     this.mario.anims.play('mario-dead')
     this.mario.setCollideWorldBounds(false) // Permitir que Mario salga de los límites del mundo del juego.
+    this.sound.add('gameover', { volume: 0.2 }).play()
 
     setTimeout(() => {
       this.mario.setVelocityY(-350)
