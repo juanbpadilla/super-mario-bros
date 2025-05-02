@@ -96,11 +96,11 @@ function update() {
   if (mario.isDead) return
 
   if (isLeftKeyDown) {
-    mario.anims.play('mario-walk', true)
+    isMarioTouchingFloor && mario.anims.play('mario-walk', true)
     mario.x -= 2
     mario.flipX = true // Voltear el sprite de Mario horizontalmente.
   } else if (isRightKeyDown) {
-    mario.anims.play('mario-walk', true)
+    isMarioTouchingFloor && mario.anims.play('mario-walk', true)
     mario.x += 2
     mario.flipX = false // Restaurar la orientación original del sprite de Mario.
   } else if(isMarioTouchingFloor) {
