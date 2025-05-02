@@ -1,4 +1,5 @@
 # Juego de Super Marion con Phaser [🔗](https://phaser.io/download/release/v3.88.2)
+🎞️ [Tutorial](https://youtu.be/RBYCgS8Et7Y?si=TCJEwSDfWZ-06CtW)
 
 ## setOrigin
 🎞️ [Como funciona el setOrigin](https://youtu.be/RBYCgS8Et7Y?si=RdADBn8b56TAjUM8&t=2306)

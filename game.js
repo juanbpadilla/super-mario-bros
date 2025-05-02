@@ -68,7 +68,11 @@ function create() { // 2.
     .setCollideWorldBounds(true) // Evitar que Mario salga de los límites del mundo del juego.
     .setGravityY(300)
 
+  this.physics.world.setBounds(0, 0, 2000, config.height) // Establecer los límites del mundo del juego.
   this.physics.add.collider(this.mario, this.floor) // Agregar colisión entre Mario y el suelo.
+
+  this.cameras.main.setBounds(0, 0, 2000, config.height) // Establecer los límites de la cámara.
+  this.cameras.main.startFollow(this.mario) // Hacer que la cámara siga a Mario.
 
   this.anims.create({
     key: 'mario-walk',
