@@ -54,12 +54,14 @@ function create() { // 2.
   this.floor = this.physics.add.staticGroup() // Crear un grupo estático para los objetos que no se mueven.
 
   this.floor
-    .create(0, config.height - 32, 'floorbricks')
-    .setOrigin(0, 0)
-
-  this.floor
-    .create(100, config.height - 32, 'floorbricks')
-    .setOrigin(0, 0)
+    .create(0, config.height - 16, 'floorbricks')
+    .setOrigin(0, 0.5)
+    .refreshBody() // Actualizar el cuerpo físico del objeto para que coincida con su nueva posición.
+    
+    this.floor
+    .create(150, config.height - 16, 'floorbricks')
+    .setOrigin(0, 0.5)
+    .refreshBody() // Actualizar el cuerpo físico del objeto para que coincida con su nueva posición.
 
   this.mario = this.physics.add.sprite(50, 100, 'mario')
     .setOrigin(0, 1)
