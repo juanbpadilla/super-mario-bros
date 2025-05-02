@@ -65,6 +65,7 @@ function create() { // 2.
 
   this.mario = this.physics.add.sprite(50, 100, 'mario')
     .setOrigin(0, 1)
+    .setCollideWorldBounds(true) // Evitar que Mario salga de los límites del mundo del juego.
 
   this.physics.add.collider(this.mario, this.floor) // Agregar colisión entre Mario y el suelo.
 
