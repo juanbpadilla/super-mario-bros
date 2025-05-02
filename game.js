@@ -83,6 +83,8 @@ function create() { // 2.
 }
 
 function update() {
+  if (this.mario.isDead) return
+
   if (this.keys.left.isDown) {
     this.mario.anims.play('mario-walk', true)
     this.mario.x -= 2
@@ -92,13 +94,17 @@ function update() {
     this.mario.x += 2
     this.mario.flipX = false // Restaurar la orientación original del sprite de Mario.
   } else {
-    // this.mario.anims.stop()
-    // this.mario.setFrame(0) // Detener la animación y establecer el primer fotograma.
     this.mario.anims.play('mario-idle', true) // Reproducir la animación de inactividad.
   }
 
   if (this.keys.up.isDown && this.mario.body.touching.down) {
     this.mario.setVelocityY(-300) // Aplicar una velocidad negativa en el eje Y para simular un salto.
     this.mario.anims.play('mario-jump', true) // Reproducir la animación de salto.
+  }
+
+  if (this.mario.y >= config.height) {
+    this.mario.isDead = true
+    this.mario.anims.play('mario-dead')
+    this.mario.setCollideWorldBounds(false) // Permitir que Mario salga de los límites del mundo del juego.
   }
 }
