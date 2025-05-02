@@ -51,13 +51,20 @@ function create() { // 2.
     .setOrigin(0, 0) // Cambia el origen de la imagen a la esquina superior izquierda.
     .setScale(0.15)
 
-  this.add.tileSprite(0, config.height - 32, config.width, 32, 'floorbricks')
+  this.floor = this.physics.add.staticGroup() // Crear un grupo estático para los objetos que no se mueven.
+
+  this.floor
+    .create(0, config.height - 32, 'floorbricks')
     .setOrigin(0, 0)
 
-  // this.mario = this.add.sprite(50, 210, 'mario')
-  //   .setOrigin(0, 1)
+  this.floor
+    .create(100, config.height - 32, 'floorbricks')
+    .setOrigin(0, 0)
+
   this.mario = this.physics.add.sprite(50, 100, 'mario')
     .setOrigin(0, 1)
+
+  this.physics.add.collider(this.mario, this.floor) // Agregar colisión entre Mario y el suelo.
 
   this.anims.create({
     key: 'mario-walk',
