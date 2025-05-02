@@ -66,6 +66,7 @@ function create() { // 2.
   this.mario = this.physics.add.sprite(50, 100, 'mario')
     .setOrigin(0, 1)
     .setCollideWorldBounds(true) // Evitar que Mario salga de los límites del mundo del juego.
+    .setGravityY(300)
 
   this.physics.add.collider(this.mario, this.floor) // Agregar colisión entre Mario y el suelo.
 
@@ -107,8 +108,8 @@ function update() {
     this.mario.anims.play('mario-idle', true) // Reproducir la animación de inactividad.
   }
 
-  if (this.keys.up.isDown) {
+  if (this.keys.up.isDown && this.mario.body.touching.down) {
+    this.mario.setVelocityY(-300) // Aplicar una velocidad negativa en el eje Y para simular un salto.
     this.mario.anims.play('mario-jump', true) // Reproducir la animación de salto.
-    this.mario.y -= 5 // Mover a Mario hacia arriba.
   }
 }
