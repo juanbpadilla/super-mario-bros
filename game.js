@@ -106,5 +106,13 @@ function update() {
     this.mario.isDead = true
     this.mario.anims.play('mario-dead')
     this.mario.setCollideWorldBounds(false) // Permitir que Mario salga de los límites del mundo del juego.
+
+    setTimeout(() => {
+      this.mario.setVelocityY(-350)
+    }, 100)
+
+    setTimeout(() => {
+      this.scene.restart() // Reiniciar la escena después de un tiempo.
+    }, 2000)
   }
 }
