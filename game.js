@@ -10,6 +10,13 @@ const config = {
   height: 244,
   backgroundColor: "#049cd8",
   parent: "game", // ID del elemento HTML donde se renderizará el juego.
+  physics: {
+    default: 'arcade',
+    arcade: {
+      gravity: { y: 300 },
+      debug: false
+    }
+  },
   scene: {
     preload, // Método para cargar recursos antes de iniciar el juego.
     create, // Método para crear los elementos del juego. (se ejecuta una vez al inicio).
@@ -47,7 +54,9 @@ function create() { // 2.
   this.add.tileSprite(0, config.height - 32, config.width, 32, 'floorbricks')
     .setOrigin(0, 0)
 
-  this.mario = this.add.sprite(50, 210, 'mario')
+  // this.mario = this.add.sprite(50, 210, 'mario')
+  //   .setOrigin(0, 1)
+  this.mario = this.physics.add.sprite(50, 100, 'mario')
     .setOrigin(0, 1)
 
   this.anims.create({
