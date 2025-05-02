@@ -65,6 +65,11 @@ function create() { // 2.
     frames: [{ key: 'mario', frame: 0 }]
   })
 
+  this.anims.create({
+    key: 'mario-jump',
+    frames: [{ key: 'mario', frame: 5 }]
+  })
+
   this.keys = this.input.keyboard.createCursorKeys() // Crear las teclas de dirección para el control del juego.
 }
 
@@ -81,5 +86,10 @@ function update() {
     // this.mario.anims.stop()
     // this.mario.setFrame(0) // Detener la animación y establecer el primer fotograma.
     this.mario.anims.play('mario-idle', true) // Reproducir la animación de inactividad.
+  }
+
+  if (this.keys.up.isDown) {
+    this.mario.anims.play('mario-jump', true) // Reproducir la animación de salto.
+    this.mario.y -= 2 // Mover a Mario hacia arriba.
   }
 }
