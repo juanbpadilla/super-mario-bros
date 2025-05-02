@@ -90,6 +90,6 @@ function update() {
 
   if (this.keys.up.isDown) {
     this.mario.anims.play('mario-jump', true) // Reproducir la animación de salto.
-    this.mario.y -= 2 // Mover a Mario hacia arriba.
+    this.mario.y -= 5 // Mover a Mario hacia arriba.
   }
 }
