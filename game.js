@@ -26,6 +26,11 @@ function preload() { // 1.
     'assets/scenery/overworld/cloud1.png'
   )
 
+  this.load.image(
+    'floorbricks',
+    'assets/scenery/overworld/floorbricks.png'
+  )
+
   this.load.spritesheet(
     'mario',  // <-- id-del-asset
     'assets/entities/mario.png',
@@ -39,7 +44,11 @@ function create() { // 2.
     .setOrigin(0, 0) // Cambia el origen de la imagen a la esquina superior izquierda.
     .setScale(0.15)
 
-  this.add.sprite(50, 200, 'mario')
+  this.add.tileSprite(0, config.height - 32, config.width, 32, 'floorbricks')
+    .setOrigin(0, 0)
+
+  this.add.sprite(50, 210, 'mario')
+    .setOrigin(0, 1)
 }
 
 function update() {}
