@@ -85,37 +85,45 @@ function create() { // 2.
 }
 
 function update() {
-  if (this.mario.isDead) return
+  const { keys, mario } = this
 
-  if (this.keys.left.isDown) {
-    this.mario.anims.play('mario-walk', true)
-    this.mario.x -= 2
-    this.mario.flipX = true // Voltear el sprite de Mario horizontalmente.
-  } else if (this.keys.right.isDown) {
-    this.mario.anims.play('mario-walk', true)
-    this.mario.x += 2
-    this.mario.flipX = false // Restaurar la orientación original del sprite de Mario.
-  } else if(this.mario.body.touching.down) {
-    this.mario.anims.play('mario-idle', true) // Reproducir la animación de inactividad.
+  const isMarioTouchingFloor = mario.body.touching.down
+
+  const isLeftKeyDown = keys.left.isDown
+  const isRightKeyDown = keys.right.isDown
+  const isUpKeyDown = keys.up.isDown
+
+  if (mario.isDead) return
+
+  if (isLeftKeyDown) {
+    mario.anims.play('mario-walk', true)
+    mario.x -= 2
+    mario.flipX = true // Voltear el sprite de Mario horizontalmente.
+  } else if (isRightKeyDown) {
+    mario.anims.play('mario-walk', true)
+    mario.x += 2
+    mario.flipX = false // Restaurar la orientación original del sprite de Mario.
+  } else if(isMarioTouchingFloor) {
+    mario.anims.play('mario-idle', true) // Reproducir la animación de inactividad.
   }
 
-  if (this.keys.up.isDown && this.mario.body.touching.down) {
-    this.mario.setVelocityY(-300) // Aplicar una velocidad negativa en el eje Y para simular un salto.
-    this.mario.anims.play('mario-jump', true) // Reproducir la animación de salto.
+  if (isUpKeyDown && isMarioTouchingFloor) {
+    mario.setVelocityY(-300) // Aplicar una velocidad negativa en el eje Y para simular un salto.
+    mario.anims.play('mario-jump', true) // Reproducir la animación de salto.
   }
 
-  if (this.mario.y >= config.height) {
-    this.mario.isDead = true
-    this.mario.anims.play('mario-dead')
-    this.mario.setCollideWorldBounds(false) // Permitir que Mario salga de los límites del mundo del juego.
+  if (mario.y >= config.height) {
+    mario.isDead = true
+    mario.anims.play('mario-dead')
+    mario.setCollideWorldBounds(false) // Permitir que Mario salga de los límites del mundo del juego.
     this.sound.add('gameover', { volume: 0.2 }).play()
 
     setTimeout(() => {
-      this.mario.setVelocityY(-350)
+      mario.setVelocityY(-350)
     }, 100)
 
     setTimeout(() => {
-      this.scene.restart() // Reiniciar la escena después de un tiempo.
+      scene.restart() // Reiniciar la escena después de un tiempo.
     }, 2000)
   }
 }
