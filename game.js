@@ -49,7 +49,10 @@ function preload () {
     { frameWidth: 16, frameHeight: 16 }
   )
 
+  // --- audio ---
   this.load.audio('gameover', 'assets/sound/music/gameover.mp3')
+
+  this.load.audio('goomba-stomp', 'assets/sound/effects/goomba-stomp.wav')
 }
 
 function create () {
@@ -85,7 +88,7 @@ function create () {
   this.physics.world.setBounds(0, 0, 2000, config.height) // Establecer los límites del mundo del juego.
   this.physics.add.collider(this.mario, this.floor) // Agregar colisión entre Mario y el suelo.
   this.physics.add.collider(this.enemy, this.floor)
-  this.physics.add.collider(this.mario, this.enemy, onHitEnemy)
+  this.physics.add.collider(this.mario, this.enemy, onHitEnemy, null, this)
 
   this.cameras.main.setBounds(0, 0, 2000, config.height) // Establecer los límites de la cámara.
   this.cameras.main.startFollow(this.mario) // Hacer que la cámara siga a Mario.
@@ -99,8 +102,13 @@ function create () {
 
 function onHitEnemy (mario, enemy) {
   if (mario.body.touching.down && enemy.body.touching.up) {
-    enemy.destroy()
+    enemy.anims.play('goomba-hurt', true)
+    enemy.setVelocityX(0)
     mario.setVelocityY(-200)
+    this.sound.play('goomba-stomp')
+    setTimeout(() => {
+      enemy.destroy()
+    }, 500)
   } else {
     // Morir mario
   }
