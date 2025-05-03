@@ -2,6 +2,7 @@
 /* global Phaser */
 
 import { createAnimations } from './animations.js' // Importar la función createAnimations desde el archivo animations.js.
+import { initAudio, playAudio } from './audio.js'
 import { checkControls } from './controls.js'
 
 /**
@@ -50,9 +51,7 @@ function preload () {
   )
 
   // --- audio ---
-  this.load.audio('gameover', 'assets/sound/music/gameover.mp3')
-
-  this.load.audio('goomba-stomp', 'assets/sound/effects/goomba-stomp.wav')
+  initAudio(this)
 }
 
 function create () {
@@ -105,7 +104,9 @@ function onHitEnemy (mario, enemy) {
     enemy.anims.play('goomba-hurt', true)
     enemy.setVelocityX(0)
     mario.setVelocityY(-200)
-    this.sound.play('goomba-stomp')
+
+    playAudio('goomba-stomp', this)
+
     setTimeout(() => {
       enemy.destroy()
     }, 500)
@@ -117,13 +118,13 @@ function onHitEnemy (mario, enemy) {
 function update () {
   checkControls(this)
 
-  const { mario, sound, scene } = this // Desestructurar el objeto this para obtener la referencia a Mario.
+  const { mario, scene } = this // Desestructurar el objeto this para obtener la referencia a Mario.
 
   if (mario.y >= config.height) {
     mario.isDead = true
     mario.anims.play('mario-dead')
     mario.setCollideWorldBounds(false) // Permitir que Mario salga de los límites del mundo del juego.
-    sound.add('gameover', { volume: 0.2 }).play()
+    playAudio('gameover', this, { volume: 0.2 })
 
     setTimeout(() => {
       mario.setVelocityY(-350)
