@@ -85,13 +85,25 @@ function create () {
   this.physics.world.setBounds(0, 0, 2000, config.height) // Establecer los límites del mundo del juego.
   this.physics.add.collider(this.mario, this.floor) // Agregar colisión entre Mario y el suelo.
   this.physics.add.collider(this.enemy, this.floor)
+  this.physics.add.collider(this.mario, this.enemy, onHitEnemy)
 
   this.cameras.main.setBounds(0, 0, 2000, config.height) // Establecer los límites de la cámara.
   this.cameras.main.startFollow(this.mario) // Hacer que la cámara siga a Mario.
 
   createAnimations(this) // Crear las animaciones de Mario.
 
+  this.enemy.anims.play('goomba-walk', true)
+
   this.keys = this.input.keyboard.createCursorKeys() // Crear las teclas de dirección para el control del juego.
+}
+
+function onHitEnemy (mario, enemy) {
+  if (mario.body.touching.down && enemy.body.touching.up) {
+    enemy.destroy()
+    mario.setVelocityY(-200)
+  } else {
+    // Morir mario
+  }
 }
 
 function update () {
