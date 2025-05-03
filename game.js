@@ -43,6 +43,12 @@ function preload () {
     { frameWidth: 18, frameHeight: 16 }
   )
 
+  this.load.spritesheet(
+    'goomba',
+    'assets/entities/overworld/goomba.png',
+    { frameWidth: 16, frameHeight: 16 }
+  )
+
   this.load.audio('gameover', 'assets/sound/music/gameover.mp3')
 }
 
@@ -70,8 +76,15 @@ function create () {
     .setCollideWorldBounds(true) // Evitar que Mario salga de los límites del mundo del juego.
     .setGravityY(300)
 
+  this.enemy = this.physics.add
+    .sprite(120, config.height - 30, 'goomba')
+    .setOrigin(0, 1)
+    .setGravityY(300)
+    .setVelocityX(-50)
+
   this.physics.world.setBounds(0, 0, 2000, config.height) // Establecer los límites del mundo del juego.
   this.physics.add.collider(this.mario, this.floor) // Agregar colisión entre Mario y el suelo.
+  this.physics.add.collider(this.enemy, this.floor)
 
   this.cameras.main.setBounds(0, 0, 2000, config.height) // Establecer los límites de la cámara.
   this.cameras.main.startFollow(this.mario) // Hacer que la cámara siga a Mario.
