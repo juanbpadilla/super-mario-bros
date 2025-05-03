@@ -11,6 +11,7 @@ import { checkControls } from './controls.js'
  *
  */
 const config = {
+  autofocus: false,
   type: Phaser.AUTO, // Tipo de renderizado (WebGL o Canvas) especificado automáticamente por Phaser.
   width: 256,
   height: 244,
@@ -111,27 +112,39 @@ function onHitEnemy (mario, enemy) {
       enemy.destroy()
     }, 500)
   } else {
-    // Morir mario
+    killMario(this)
   }
 }
 
 function update () {
+  const { mario } = this // Desestructurar el objeto this para obtener la referencia a Mario.
+
   checkControls(this)
 
-  const { mario, scene } = this // Desestructurar el objeto this para obtener la referencia a Mario.
-
   if (mario.y >= config.height) {
-    mario.isDead = true
-    mario.anims.play('mario-dead')
-    mario.setCollideWorldBounds(false) // Permitir que Mario salga de los límites del mundo del juego.
-    playAudio('gameover', this, { volume: 0.2 })
-
-    setTimeout(() => {
-      mario.setVelocityY(-350)
-    }, 100)
-
-    setTimeout(() => {
-      scene.restart() // Reiniciar la escena después de un tiempo.
-    }, 2000)
+    killMario(this)
   }
+}
+
+function killMario (game) {
+  const { mario, scene } = game
+
+  if (mario.isDead) return // Si Mario ya está muerto, no hacer nada.
+
+  mario.isDead = true
+  mario.anims.play('mario-dead')
+  mario.setCollideWorldBounds(false) // Permitir que Mario salga de los límites del mundo del juego.
+
+  playAudio('gameover', game, { volume: 0.2 })
+
+  mario.body.checkCollision.none = true // Desactivar la colisión de Mario con el mundo.
+  mario.setVelocityX(0)
+
+  setTimeout(() => {
+    mario.setVelocityY(-250)
+  }, 100)
+
+  setTimeout(() => {
+    scene.restart() // Reiniciar la escena después de un tiempo.
+  }, 2000)
 }
