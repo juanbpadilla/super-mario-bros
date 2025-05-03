@@ -81,6 +81,7 @@ function create () {
   this.coins = this.physics.add.staticGroup()
   this.coins.create(150, 150, 'coin').anims.play('coin-idle', true)
   this.coins.create(300, 150, 'coin').anims.play('coin-idle', true)
+  this.physics.add.overlap(this.mario, this.coins, collectCoin, null, this)
 
   this.physics.world.setBounds(0, 0, 2000, config.height) // Establecer los límites del mundo del juego.
   this.physics.add.collider(this.mario, this.floor) // Agregar colisión entre Mario y el suelo.
@@ -93,6 +94,11 @@ function create () {
   this.enemy.anims.play('goomba-walk', true)
 
   this.keys = this.input.keyboard.createCursorKeys() // Crear las teclas de dirección para el control del juego.
+}
+
+function collectCoin (mario, coin) {
+  coin.disableBody(true, true)
+  playAudio('coin-pickup', this, { volume: 0.1 }) // Reproducir el sonido de recoger una moneda.
 }
 
 function onHitEnemy (mario, enemy) {
