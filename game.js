@@ -2,6 +2,7 @@
 /* global Phaser */
 
 import { createAnimations } from './animations.js' // Importar la función createAnimations desde el archivo animations.js.
+import { checkControls } from './controls.js'
 
 /**
  * Phaser es una librería de JavaScript para crear juegos en 2D.
@@ -81,45 +82,22 @@ function create () {
 }
 
 function update () {
-  const { keys, mario } = this
+  checkControls(this)
 
-  const isMarioTouchingFloor = mario.body.touching.down
-
-  const isLeftKeyDown = keys.left.isDown
-  const isRightKeyDown = keys.right.isDown
-  const isUpKeyDown = keys.up.isDown
-
-  if (mario.isDead) return
-
-  if (isLeftKeyDown) {
-    isMarioTouchingFloor && mario.anims.play('mario-walk', true)
-    mario.x -= 2
-    mario.flipX = true // Voltear el sprite de Mario horizontalmente.
-  } else if (isRightKeyDown) {
-    isMarioTouchingFloor && mario.anims.play('mario-walk', true)
-    mario.x += 2
-    mario.flipX = false // Restaurar la orientación original del sprite de Mario.
-  } else if (isMarioTouchingFloor) {
-    mario.anims.play('mario-idle', true) // Reproducir la animación de inactividad.
-  }
-
-  if (isUpKeyDown && isMarioTouchingFloor) {
-    mario.setVelocityY(-300) // Aplicar una velocidad negativa en el eje Y para simular un salto.
-    mario.anims.play('mario-jump', true) // Reproducir la animación de salto.
-  }
+  const { mario, sound, scene } = this // Desestructurar el objeto this para obtener la referencia a Mario.
 
   if (mario.y >= config.height) {
     mario.isDead = true
     mario.anims.play('mario-dead')
     mario.setCollideWorldBounds(false) // Permitir que Mario salga de los límites del mundo del juego.
-    this.sound.add('gameover', { volume: 0.2 }).play()
+    sound.add('gameover', { volume: 0.2 }).play()
 
     setTimeout(() => {
       mario.setVelocityY(-350)
     }, 100)
 
     setTimeout(() => {
-      this.scene.restart() // Reiniciar la escena después de un tiempo.
+      scene.restart() // Reiniciar la escena después de un tiempo.
     }, 2000)
   }
 }
