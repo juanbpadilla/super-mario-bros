@@ -4,6 +4,7 @@
 import { createAnimations } from './animations.js' // Importar la función createAnimations desde el archivo animations.js.
 import { initAudio, playAudio } from './audio.js'
 import { checkControls } from './controls.js'
+import { initSpriteSheet } from './spritesheet.js'
 
 /**
  * Phaser es una librería de JavaScript para crear juegos en 2D.
@@ -39,23 +40,15 @@ function preload () {
 
   this.load.image('floorbricks', 'assets/scenery/overworld/floorbricks.png')
 
-  this.load.spritesheet(
-    'mario', // <-- id-del-asset
-    'assets/entities/mario.png',
-    { frameWidth: 18, frameHeight: 16 }
-  )
-
-  this.load.spritesheet(
-    'goomba',
-    'assets/entities/overworld/goomba.png',
-    { frameWidth: 16, frameHeight: 16 }
-  )
+  initSpriteSheet(this)
 
   // --- audio ---
   initAudio(this)
 }
 
 function create () {
+  createAnimations(this) // Crear las animaciones de Mario.
+
   this.add
     .image(100, 50, 'cloud1')
     .setOrigin(0, 0) // Cambia el origen de la imagen a la esquina superior izquierda.
@@ -85,6 +78,10 @@ function create () {
     .setGravityY(300)
     .setVelocityX(-50)
 
+  this.coins = this.physics.add.staticGroup()
+  this.coins.create(150, 150, 'coin').anims.play('coin-idle', true)
+  this.coins.create(300, 150, 'coin').anims.play('coin-idle', true)
+
   this.physics.world.setBounds(0, 0, 2000, config.height) // Establecer los límites del mundo del juego.
   this.physics.add.collider(this.mario, this.floor) // Agregar colisión entre Mario y el suelo.
   this.physics.add.collider(this.enemy, this.floor)
@@ -92,8 +89,6 @@ function create () {
 
   this.cameras.main.setBounds(0, 0, 2000, config.height) // Establecer los límites de la cámara.
   this.cameras.main.startFollow(this.mario) // Hacer que la cámara siga a Mario.
-
-  createAnimations(this) // Crear las animaciones de Mario.
 
   this.enemy.anims.play('goomba-walk', true)
 
