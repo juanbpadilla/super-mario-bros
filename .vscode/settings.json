@@ -1,0 +1,8 @@
+{
+  "eslint.useFlatConfig": true,
+  "prettier.useTabs": false,
+  "prettier.semi": false,
+  "prettier.enable": false,
+  "prettier.htmlWhitespaceSensitivity": "strict",
+  "editor.formatOnSave": true
+}

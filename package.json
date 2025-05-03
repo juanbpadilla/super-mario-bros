@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "eslint": "^9.26.0",
+    "neostandard": "^0.12.1"
+  }
+}
