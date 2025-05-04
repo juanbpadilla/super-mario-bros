@@ -99,23 +99,26 @@ function create () {
 function collectCoin (mario, coin) {
   coin.disableBody(true, true)
   playAudio('coin-pickup', this, { volume: 0.1 }) // Reproducir el sonido de recoger una moneda.
+  addToScore(100, coin, this)
+}
 
-  const scoreText = this.add.text(
-    coin.x,
-    coin.y,
-    100,
+function addToScore (scoreAdd, origin, game) {
+  const scoreText = game.add.text(
+    origin.x,
+    origin.y,
+    scoreAdd,
     {
       fontFamily: 'pixel',
       fontSize: config.width / 40
     }
   )
 
-  this.tweens.add({
+  game.tweens.add({
     targets: scoreText,
     duration: 500,
     y: scoreText.y - 20,
     onComplete: () => {
-      this.tweens.add({
+      game.tweens.add({
         targets: scoreText,
         duration: 100,
         alpha: 0,
@@ -134,6 +137,7 @@ function onHitEnemy (mario, enemy) {
     mario.setVelocityY(-200)
 
     playAudio('goomba-stomp', this)
+    addToScore(200, enemy, this)
 
     setTimeout(() => {
       enemy.destroy()
@@ -162,7 +166,7 @@ function killMario (game) {
   mario.anims.play('mario-dead')
   mario.setCollideWorldBounds(false) // Permitir que Mario salga de los límites del mundo del juego.
 
-  playAudio('gameover', game, { volume: 0.2 })
+  playAudio('gameover', game, { volume: 0 })
 
   mario.body.checkCollision.none = true // Desactivar la colisión de Mario con el mundo.
   mario.setVelocityX(0)
