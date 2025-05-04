@@ -100,7 +100,7 @@ function collectCoin (mario, coin) {
   coin.disableBody(true, true)
   playAudio('coin-pickup', this, { volume: 0.1 }) // Reproducir el sonido de recoger una moneda.
 
-  this.add.text(
+  const scoreText = this.add.text(
     coin.x,
     coin.y,
     100,
@@ -109,6 +109,22 @@ function collectCoin (mario, coin) {
       fontSize: config.width / 40
     }
   )
+
+  this.tweens.add({
+    targets: scoreText,
+    duration: 500,
+    y: scoreText.y - 20,
+    onComplete: () => {
+      this.tweens.add({
+        targets: scoreText,
+        duration: 100,
+        alpha: 0,
+        onComplete: () => {
+          scoreText.destroy() // Destruir el texto de puntuación después de que se complete la animación.
+        }
+      })
+    }
+  })
 }
 
 function onHitEnemy (mario, enemy) {
