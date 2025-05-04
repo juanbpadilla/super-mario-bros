@@ -40,6 +40,8 @@ function preload () {
 
   this.load.image('floorbricks', 'assets/scenery/overworld/floorbricks.png')
 
+  this.load.image('supermushroom', 'assets/collectibles/super-mushroom.png')
+
   initSpriteSheet(this)
 
   // --- audio ---
@@ -78,10 +80,11 @@ function create () {
     .setGravityY(300)
     .setVelocityX(-50)
 
-  this.coins = this.physics.add.staticGroup()
-  this.coins.create(150, 150, 'coin').anims.play('coin-idle', true)
-  this.coins.create(300, 150, 'coin').anims.play('coin-idle', true)
-  this.physics.add.overlap(this.mario, this.coins, collectCoin, null, this)
+  this.collectibes = this.physics.add.staticGroup()
+  this.collectibes.create(150, 150, 'coin').anims.play('coin-idle', true)
+  this.collectibes.create(300, 150, 'coin').anims.play('coin-idle', true)
+  this.collectibes.create(200, config.height - 40, 'supermushroom').anims.play('supermushroom-idle', true)
+  this.physics.add.overlap(this.mario, this.collectibes, collectItem, null, this)
 
   this.physics.world.setBounds(0, 0, 2000, config.height) // Establecer los límites del mundo del juego.
   this.physics.add.collider(this.mario, this.floor) // Agregar colisión entre Mario y el suelo.
@@ -96,10 +99,16 @@ function create () {
   this.keys = this.input.keyboard.createCursorKeys() // Crear las teclas de dirección para el control del juego.
 }
 
-function collectCoin (mario, coin) {
-  coin.disableBody(true, true)
-  playAudio('coin-pickup', this, { volume: 0.1 }) // Reproducir el sonido de recoger una moneda.
-  addToScore(100, coin, this)
+function collectItem (mario, item) {
+  const { texture: { key } } = item
+  item.destroy()
+
+  if (key === 'coin') {
+    playAudio('coin-pickup', this, { volume: 0.1 }) // Reproducir el sonido de recoger una moneda.
+    addToScore(100, item, this)
+  } else if (key === 'supermushroom') {
+    mario.anims.play('mario-grown-idle', true) // Reproducir la animación de Mario crecido.
+  }
 }
 
 function addToScore (scoreAdd, origin, game) {
