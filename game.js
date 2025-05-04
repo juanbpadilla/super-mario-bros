@@ -99,6 +99,16 @@ function create () {
 function collectCoin (mario, coin) {
   coin.disableBody(true, true)
   playAudio('coin-pickup', this, { volume: 0.1 }) // Reproducir el sonido de recoger una moneda.
+
+  this.add.text(
+    coin.x,
+    coin.y,
+    100,
+    {
+      fontFamily: 'pixel',
+      fontSize: config.width / 40
+    }
+  )
 }
 
 function onHitEnemy (mario, enemy) {
