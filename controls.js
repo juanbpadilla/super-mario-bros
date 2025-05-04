@@ -1,3 +1,16 @@
+const MARIO_ANIMATIONS = {
+  grown: {
+    idle: 'mario-grown-idle',
+    walk: 'mario-grown-walk',
+    jump: 'mario-grown-jump'
+  },
+  normal: {
+    idle: 'mario-idle',
+    walk: 'mario-walk',
+    jump: 'mario-jump'
+  }
+}
+
 export function checkControls ({ mario, keys }) {
   const isMarioTouchingFloor = mario.body.touching.down
 
@@ -6,6 +19,11 @@ export function checkControls ({ mario, keys }) {
   const isUpKeyDown = keys.up.isDown
 
   if (mario.isDead) return
+  if (mario.isBlocked) return
+
+  const marioAnimations = mario.isGrown
+    ? MARIO_ANIMATIONS.grown
+    : MARIO_ANIMATIONS.normal
 
   if (isLeftKeyDown) {
     isMarioTouchingFloor && mario.anims.play('mario-walk', true)
@@ -16,7 +34,7 @@ export function checkControls ({ mario, keys }) {
     mario.x += 2
     mario.flipX = false // Restaurar la orientación original del sprite de Mario.
   } else if (isMarioTouchingFloor) {
-    mario.anims.play('mario-idle', true) // Reproducir la animación de inactividad.
+    mario.anims.play(marioAnimations.idle, true) // Reproducir la animación de inactividad.
   }
 
   if (isUpKeyDown && isMarioTouchingFloor) {

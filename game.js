@@ -107,7 +107,27 @@ function collectItem (mario, item) {
     playAudio('coin-pickup', this, { volume: 0.1 }) // Reproducir el sonido de recoger una moneda.
     addToScore(100, item, this)
   } else if (key === 'supermushroom') {
-    mario.anims.play('mario-grown-idle', true) // Reproducir la animación de Mario crecido.
+    this.physics.world.pause()
+    this.anims.pauseAll()
+
+    mario.isBlocked = true
+    // mario.anims.play('mario-grown-idle', true) // Reproducir la animación de Mario crecido.
+
+    let i = 0
+    const interval = setInterval(() => {
+      mario.anims.play(i % 2 === 0
+        ? 'mario-grown-idle'
+        : 'mario-idle'
+      )
+      i++
+    }, 100)
+
+    setTimeout(() => {
+      mario.isGrown = true
+      clearInterval(interval)
+      this.physics.world.resume()
+      this.anims.resumeAll()
+    }, 1000)
   }
 }
 
