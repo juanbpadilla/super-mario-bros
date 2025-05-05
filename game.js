@@ -22,7 +22,7 @@ const config = {
     default: 'arcade',
     arcade: {
       gravity: { y: 300 },
-      debug: false,
+      debug: true,
     },
   },
   scene: {
@@ -97,6 +97,20 @@ function create () {
   this.enemy.anims.play('goomba-walk', true)
 
   this.keys = this.input.keyboard.createCursorKeys() // Crear las teclas de dirección para el control del juego.
+  this.keys.esc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC) // Crear la tecla ESC para salir del juego.
+
+  this.isPaused = false
+
+  this.pauseOverlay = this.add.rectangle(0, 0, config.width, config.height, 0x000000, 0.5)
+  this.pauseOverlay.setOrigin(0, 0)
+  this.pauseOverlay.setVisible(false)
+
+  this.pauseMenu = this.add.text(config.width / 2, config.height / 2, 'PAUSED', {
+    fontFamily: 'pixel',
+    fontSize: config.width / 20,
+    color: '#fff',
+    align: 'center',
+  }).setOrigin(0.5, 0.5).setVisible(false) // Crear el menú de pausa y ocultarlo inicialmente.
 }
 
 function collectItem (mario, item) {
@@ -198,7 +212,7 @@ function killMario (game) {
   mario.anims.play('mario-dead')
   mario.setCollideWorldBounds(false) // Permitir que Mario salga de los límites del mundo del juego.
 
-  playAudio('gameover', game, { volume: 0 })
+  playAudio('gameover', game, { volume: 0.2 })
 
   mario.body.checkCollision.none = true // Desactivar la colisión de Mario con el mundo.
   mario.setVelocityX(0)
@@ -206,6 +220,9 @@ function killMario (game) {
   setTimeout(() => {
     mario.setVelocityY(-250)
   }, 100)
+
+  // this.physics.world.pause()
+  // this.anims.pauseAll()
 
   setTimeout(() => {
     scene.restart() // Reiniciar la escena después de un tiempo.

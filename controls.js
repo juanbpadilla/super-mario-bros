@@ -1,3 +1,7 @@
+// import Phaser from 'phaser'
+
+import { playAudio } from './audio.js'
+
 const MARIO_ANIMATIONS = {
   grown: {
     idle: 'mario-grown-idle',
@@ -11,12 +15,16 @@ const MARIO_ANIMATIONS = {
   }
 }
 
-export function checkControls ({ mario, keys }) {
+export function checkControls (game) {
+  const { mario, keys } = game
+  const cam = game.cameras.main
+
   const isMarioTouchingFloor = mario.body.touching.down
 
   const isLeftKeyDown = keys.left.isDown
   const isRightKeyDown = keys.right.isDown
   const isUpKeyDown = keys.up.isDown
+  // const isEscapeKeyDown = keys.esc.isJustDown
 
   if (mario.isDead) return
   if (mario.isBlocked) return
@@ -24,6 +32,24 @@ export function checkControls ({ mario, keys }) {
   const marioAnimations = mario.isGrown
     ? MARIO_ANIMATIONS.grown
     : MARIO_ANIMATIONS.normal
+
+  // eslint-disable-next-line no-undef
+  if (Phaser.Input.Keyboard.JustDown(keys.esc)) {
+    game.isPaused = !game.isPaused
+    playAudio('pause', game, { volume: 0.2 })
+    game.pauseOverlay.setVisible(game.isPaused)
+    game.pauseMenu.setVisible(game.isPaused)
+    // Pausar el juego si se presiona la tecla Escape.
+    if (game.isPaused) {
+      game.pauseOverlay.setPosition(cam.scrollX, cam.scrollY)
+      game.pauseMenu.setPosition(cam.scrollX + (cam.width / 2), game.pauseMenu.y)
+      game.physics.world.pause()
+      game.anims.pauseAll()
+    } else {
+      game.physics.world.resume()
+      game.anims.resumeAll()
+    }
+  }
 
   if (isLeftKeyDown) {
     isMarioTouchingFloor && mario.anims.play('mario-walk', true)

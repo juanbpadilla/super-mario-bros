@@ -14,6 +14,10 @@ const INIT_AUDIOS = [
   {
     key: 'powerup',
     path: 'assets/sound/effects/consume-powerup.mp3'
+  },
+  {
+    key: 'pause',
+    path: 'assets/sound/effects/pause.wav'
   }
 ]
 
