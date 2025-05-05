@@ -74,6 +74,8 @@ function create () {
     .setCollideWorldBounds(true) // Evitar que Mario salga de los límites del mundo del juego.
     .setGravityY(300)
 
+  console.log(this.mario)
+
   this.enemy = this.physics.add
     .sprite(120, config.height - 30, 'goomba')
     .setOrigin(0, 1)
@@ -99,18 +101,17 @@ function create () {
   this.keys = this.input.keyboard.createCursorKeys() // Crear las teclas de dirección para el control del juego.
   this.keys.esc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC) // Crear la tecla ESC para salir del juego.
 
-  this.isPaused = false
+  this.isPaused = true
 
   this.pauseOverlay = this.add.rectangle(0, 0, config.width, config.height, 0x000000, 0.5)
   this.pauseOverlay.setOrigin(0, 0)
-  this.pauseOverlay.setVisible(false)
+  this.pauseOverlay.setVisible(this.isPaused)
 
   this.pauseMenu = this.add.text(config.width / 2, config.height / 2, 'PAUSED', {
     fontFamily: 'pixel',
     fontSize: config.width / 20,
-    color: '#fff',
     align: 'center',
-  }).setOrigin(0.5, 0.5).setVisible(false) // Crear el menú de pausa y ocultarlo inicialmente.
+  }).setOrigin(0.5, 0.5).setVisible(this.isPaused) // Crear el menú de pausa y ocultarlo inicialmente.
 }
 
 function collectItem (mario, item) {
@@ -195,8 +196,20 @@ function onHitEnemy (mario, enemy) {
 
 function update () {
   const { mario } = this // Desestructurar el objeto this para obtener la referencia a Mario.
+  const cam = this.cameras.main
 
   checkControls(this)
+
+  // Pausar el juego si se presiona la tecla Escape.
+  if (this.isPaused) {
+    this.pauseOverlay.setPosition(cam.scrollX, cam.scrollY)
+    this.pauseMenu.setPosition(cam.scrollX + (cam.width / 2), this.pauseMenu.y)
+    this.physics.world.pause()
+    this.anims.pauseAll()
+  } else {
+    this.physics.world.resume()
+    this.anims.resumeAll()
+  }
 
   if (mario.y >= config.height) {
     killMario(this)
