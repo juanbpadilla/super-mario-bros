@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap');
 
 @font-face {
-  font-family: pixel_nums;
+  font-family: 'pixel';
   src: url('../fonts/SuperMario.ttf');
 }
 html,
@@ -16,14 +16,14 @@ body {
   height: 100%;
   width: 100%;
   color: #f0f0f0;
-  font-family: pixel_nums;
+  font-family: 'pixel';
 }
 #game {
   margin: 0px;
   padding: 0px;
   height: 100%;
   width: 100%;
-  font-family: pixel_nums;
+  font-family: 'pixel';
   display: flex;
   align-items: center;
   justify-content: center;

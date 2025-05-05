@@ -2,28 +2,43 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Super Mario Bros</title>
   <link rel="icon" type="image/x-icon" href="assets/favicon.png">
-  <script src="./phaser.min.js"></script>
-  <script type="module" src="./game.js"></script>
   <style>
     @font-face {
       font-family: 'pixel';
-      src: url('assets/fonts/SuperMario.ttf')
+      src: url('assets/fonts/SuperMario.ttf');
+    }
+    html,
+    body {
+      zoom: 100%;
+      max-zoom: 100%;
+      min-zoom: 100%;
+      background: #039bd8;
+      margin: 0px;
+      padding: 0px;
+      overflow: hidden;
+      height: 100%;
+      width: 100%;
+      color: #f0f0f0;
+      font-family: 'pixel', sans-serif;
     }
 
-    body {
+    #game {
+      margin: 0px;
+      padding: 0px;
+      height: 100%;
+      width: 100%;
       font-family: 'pixel', sans-serif;
-      display: grid;
-      place-items: center;
-      height: 100vh;
-      margin: 0;
-      padding: 0;
-      background: black;
-      color: #f0f0f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   </style>
+  <script src="./phaser.min.js"></script>
+  <script type="module" src="./game.js"></script>
 </head>
 <body>
   <div id="game"></div>

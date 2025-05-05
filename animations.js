@@ -68,4 +68,21 @@ export const createAnimations = (game) => {
     frameRate: 12,
     repeat: -1
   })
+
+  game.anims.create({
+    key: 'custom-block-default',
+    frames: game.anims.generateFrameNumbers('custom-block', { start: 2, end: 0 }),
+    frameRate: 5,
+    repeat: -1,
+    repeatDelay: 5
+  })
+
+  // > NPC
+  game.anims.create({
+    key: 'npc-default',
+    frames: game.anims.generateFrameNumbers('npc', { start: 0, end: 1 }),
+    frameRate: 2,
+    repeat: -1,
+    repeatDelay: 10
+  })
 }

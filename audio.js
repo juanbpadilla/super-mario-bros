@@ -18,6 +18,10 @@ const INIT_AUDIOS = [
   {
     key: 'pause',
     path: 'assets/sound/effects/pause.wav'
+  },
+  {
+    key: 'jumpsound',
+    path: 'assets/sound/effects/jump.mp3'
   }
 ]
 

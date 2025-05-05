@@ -15,7 +15,7 @@ const MARIO_ANIMATIONS = {
   }
 }
 
-export function checkControls (game) {
+export function checkControls (game, velocityY) {
   const { mario, keys } = game
 
   const isMarioTouchingFloor = mario.body.touching.down
@@ -23,6 +23,7 @@ export function checkControls (game) {
   const isLeftKeyDown = keys.left.isDown
   const isRightKeyDown = keys.right.isDown
   const isUpKeyDown = keys.up.isDown
+  const isDownKeyDown = keys.down.isDown
   // const isEscapeKeyDown = keys.esc.isJustDown
 
   if (mario.isDead) return
@@ -54,7 +55,9 @@ export function checkControls (game) {
   }
 
   if (isUpKeyDown && isMarioTouchingFloor) {
+    playAudio('jumpsound', game, { volume: 0.1 })
     mario.setVelocityY(-300) // Aplicar una velocidad negativa en el eje Y para simular un salto.
+    isDownKeyDown ? mario.setVelocityY(-velocityY / 1.25) : mario.setVelocityY(-velocityY)
     mario.anims.play(marioAnimations.jump, true) // Reproducir la animación de salto.
   }
 }
