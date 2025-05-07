@@ -6,7 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Super Mario Bros</title>
   <link rel="icon" type="image/x-icon" href="assets/favicon.png">
-  <style>
+  <link rel="preload" href="assets/others/loading.gif" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <!-- <style>
     @font-face {
       font-family: 'pixel';
       src: url('assets/fonts/SuperMario.ttf');
@@ -36,11 +38,25 @@
       align-items: center;
       justify-content: center;
     }
-  </style>
-  <script src="./phaser.min.js"></script>
-  <script type="module" src="./game.js"></script>
+  </style> -->
+  <script src="./src/phaser.min.js"></script>
+  <script type="module" src="./src/game.js"></script>
 </head>
 <body>
-  <div id="game"></div>
+  <div id="game">
+    <img id="gif" src="assets/others/loading.gif" alt="Loading animation" class="loading-gif">
+    <img id="gif-shadow" src="assets/others/loading.gif" alt="Loading animation shadow" class="loading-gif">
+  </div>
+
+  <noscript>
+    <div class="blurbg">
+      <div class="alertpopup">
+        <h2>JavaScript disabled!</h2>
+        <hr>
+        <p>This website uses JavaScript to work, otherwise the game will not load.</p>
+        <p>Enable or stop blocking JavaScript and try again.</p>
+      </div>
+    </div>
+  </noscript>
 </body>
 </html>

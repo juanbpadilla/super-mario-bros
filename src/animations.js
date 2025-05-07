@@ -85,4 +85,9 @@ export const createAnimations = (game) => {
     repeat: -1,
     repeatDelay: 10
   })
+
+  game.anims.create({
+    key: 'supermushroom-idle',
+    frames: [{ key: 'supermushroom', frame: 0 }]
+  })
 }

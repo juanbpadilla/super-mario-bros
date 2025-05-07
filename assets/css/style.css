@@ -7,9 +7,10 @@
 html,
 body {
   zoom: 100%;
-  max-zoom: 100%;
-  min-zoom: 100%;
-  background: rgb(132, 132, 255);
+  /* max-zoom: 100%;
+  min-zoom: 100%; */
+  /* background: rgb(132, 132, 255); */
+  background: #039bd8;
   margin: 0px;
   padding: 0px;
   overflow: hidden;

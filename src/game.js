@@ -4,14 +4,10 @@
 import { createAnimations } from './animations.js' // Importar la función createAnimations desde el archivo animations.js.
 import { initAudio, playAudio } from './audio.js'
 import { checkControls } from './controls.js'
+import { drawStartScreen } from './game/drawStartScreen.js'
 import { initImages, initSpriteSheet } from './spritesheet.js'
 
-/**
- * Phaser es una librería de JavaScript para crear juegos en 2D.
- * Al importar el archivo Phaser.js, se puede utilizar la clase Phaser.Game para crear un nuevo juego.
- *
- */
-
+const loadingGif = document.querySelectorAll('.loading-gif')
 const screenWidth = window.innerWidth
 const screenHeight = window.innerHeight * 1.1
 console.log({ screenWidth }, { screenHeight })
@@ -30,12 +26,12 @@ const config = {
   height: screenHeight,
   backgroundColor: 0x049cd8,
   parent: 'game', // ID del elemento HTML donde se renderizará el juego.
-  // preserveDrawingBuffer: true,
+  preserveDrawingBuffer: true,
   physics: {
     default: 'arcade',
     arcade: {
       gravity: { y: levelGravity },
-      debug: true,
+      debug: false,
     },
   },
   scene: {
@@ -57,6 +53,38 @@ const startOffset = screenWidth / 2.5
 // const platformPiecesWidth = (worldWidth - screenWidth) / platformPieces
 
 function preload () {
+  const progressBox = this.add.graphics()
+  const progressBar = this.add.graphics()
+  progressBox.fillStyle(0x222222, 1)
+  progressBox.fillRoundedRect(screenWidth / 2.48, screenHeight / 2 * 1.05, screenWidth / 5.3, screenHeight / 20.7, 10)
+
+  const width = this.cameras.main.width
+  const height = this.cameras.main.height
+
+  const percentText = this.make.text({
+    x: width / 2,
+    y: height / 2 * 1.25,
+    text: '0%',
+    style: {
+      font: screenWidth / 96 + 'px pixel',
+      fill: '#ffffff'
+    }
+  })
+  percentText.setOrigin(0.5, 0.5)
+
+  this.load.on('progress', function (value) {
+    percentText.setText(value * 99 >= 99 ? 'Generating world...' : 'Loading... ' + parseInt(value * 99) + '%')
+    progressBar.clear()
+    progressBar.fillStyle(0xffffff, 1)
+    progressBar.fillRoundedRect(screenWidth / 2.45, screenHeight / 2 * 1.07, screenWidth / 5.6 * value, screenHeight / 34.5, 5)
+  })
+
+  this.load.on('complete', function () {
+    progressBar.destroy()
+    progressBox.destroy()
+    percentText.destroy()
+    loadingGif.forEach(gif => { gif.style.display = 'none' })
+  })
   // Load Fonts
   this.load.bitmapFont('carrier_command', 'assets/fonts/carrier_command.png', 'assets/fonts/carrier_command.xml')
 
@@ -69,10 +97,14 @@ function preload () {
 }
 
 function create () {
+  this.screenWidth = screenWidth
+  this.screenHeight = screenHeight
+  this.platformHeight = platformHeight
   createAnimations(this) // Crear las animaciones de Mario.
 
   this.physics.world.setBounds(0, 0, worldWidth, screenHeight) // Establecer los límites del mundo del juego.
   this.cameras.main.setBounds(0, 0, worldWidth, screenHeight) // Establecer los límites de la cámara.
+  this.cameras.main.isFollowing = false
 
   // this.add
   //   .image(100, 50, 'cloud1')
@@ -102,9 +134,7 @@ function create () {
     // .setGravityY(300)
   this.mario.depth = 3
 
-  console.log(this.mario)
-
-  drawStartScreen.call(this)
+  drawStartScreen.call(this, config)
 
   this.enemy = this.physics.add
     .sprite(120, config.height - 30, 'goomba')
@@ -122,7 +152,7 @@ function create () {
   // this.physics.add.collider(this.enemy, this.floor)
   this.physics.add.collider(this.mario, this.enemy, onHitEnemy, null, this)
 
-  this.cameras.main.startFollow(this.mario) // Hacer que la cámara siga a Mario.
+  // this.cameras.main.startFollow(this.mario) // Hacer que la cámara siga a Mario.
 
   // this.enemy.anims.play('goomba-walk', true)
 
@@ -268,66 +298,4 @@ function killMario (game) {
   setTimeout(() => {
     scene.restart() // Reiniciar la escena después de un tiempo.
   }, 2000)
-}
-
-function drawStartScreen () {
-  const player = this.mario
-  const screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2
-
-  // Draw sky
-  this.add.rectangle(0, 0, screenWidth, screenHeight, config.backgroundColor).setOrigin(0).depth = -1
-
-  const platform = this.add.tileSprite(0, screenHeight, screenWidth / 2, platformHeight, 'start-floorbricks').setScale(2).setOrigin(0, 0.5)
-  this.physics.add.existing(platform)
-  platform.body.immovable = true
-  platform.body.allowGravity = false
-  // Apply player collision with platform
-  this.physics.add.collider(player, platform)
-
-  /*
-  this.add.text(screenWidth / 2, screenHeight - (screenHeight* 0.9),
-  "Known bugs: \n. Mobile controls are (at least) not nice",
-  { fontFamily: 'pixel_nums', fontSize: (screenWidth / 115), align: 'left'}).setLineSpacing(screenHeight / 34.5);
-  */
-
-  this.add.image(screenWidth / 50, screenHeight / 3, 'cloud1').setScale(screenHeight / 1725)
-  this.add.image(screenWidth / 1.25, screenHeight / 2, 'cloud1').setScale(screenHeight / 1725)
-  this.add.image(screenWidth / 1.05, screenHeight / 6.5, 'cloud2').setScale(screenHeight / 1725)
-  this.add.image(screenWidth / 3, screenHeight / 3.5, 'cloud2').setScale(screenHeight / 1725)
-  this.add.image(screenWidth / 2.65, screenHeight / 2.8, 'cloud2').setScale(screenHeight / 1725)
-
-  this.add.image(screenWidth / 50, screenHeight / 3, 'cloud1').setScale(screenHeight / 1725)
-
-  this.add.image(screenWidth / 25, screenHeight / 10, 'sign').setOrigin(0).setScale(screenHeight / 350)
-
-  const propsY = screenHeight - platformHeight
-
-  this.add.image(screenWidth / 50, propsY, 'mountain2').setOrigin(0, 1).setScale(screenHeight / 517)
-  this.add.image(screenWidth / 300, propsY, 'mountain1').setOrigin(0, 1).setScale(screenHeight / 517)
-
-  this.add.image(screenWidth / 4, propsY, 'bush1').setOrigin(0, 1).setScale(screenHeight / 609)
-  this.add.image(screenWidth / 1.55, propsY, 'bush2').setOrigin(0, 1).setScale(screenHeight / 609)
-  this.add.image(screenWidth / 1.5, propsY, 'bush2').setOrigin(0, 1).setScale(screenHeight / 609)
-
-  this.add.tileSprite(screenWidth / 15, propsY, 350, 35, 'fence').setOrigin(0, 1).setScale(screenHeight / 863)
-
-  this.customBlock = this.add.sprite(screenCenterX, screenHeight - (platformHeight * 1.9), 'custom-block').setScale(screenHeight / 345)
-  this.customBlock.anims.play('custom-block-default')
-  this.physics.add.collider(player, this.customBlock, function () {
-    // if (player.body.blocked.up) showSettings.call(this)
-  }, null, this)
-  this.physics.add.existing(this.customBlock)
-  this.customBlock.body.allowGravity = false
-  this.customBlock.body.immovable = true
-
-  this.add.image(screenCenterX, screenHeight - (platformHeight * 1.9), 'gear')
-    .setScale(screenHeight / 13000)
-    .setInteractive().on('pointerdown', () =>
-      // showSettings.call(this)
-      console.log('pointerdown')
-    )
-
-  this.add.image(screenCenterX * 1.12, screenHeight - (platformHeight * 1.5), 'settings-bubble').setScale(screenHeight / 620)
-
-  this.add.sprite(screenCenterX * 1.07, screenHeight - platformHeight, 'npc').setOrigin(0.5, 1).setScale(screenHeight / 365).anims.play('npc-default', true)
 }
