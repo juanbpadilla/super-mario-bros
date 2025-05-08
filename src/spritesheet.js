@@ -33,6 +33,12 @@ const INIT_SPRITESHEET = [
     frameHeight: 32
   },
   {
+    key: 'mario-fire',
+    path: 'assets/entities/mario-fire.png',
+    frameWidth: 18,
+    frameHeight: 32
+  },
+  {
     key: 'npc',
     path: 'assets/hud/npc.png',
     frameWidth: 16,

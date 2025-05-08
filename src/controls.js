@@ -4,18 +4,29 @@
 import { playAudio } from './audio.js'
 import { playerOptions, screenHeight, screenWidth, velocityY, worldWidth } from './game/services/config.js'
 
-const MARIO_ANIMATIONS = {
-  grown: {
-    idle: 'mario-grown-idle',
-    walk: 'mario-grown-walk',
-    jump: 'mario-grown-jump'
-  },
-  normal: {
+const MARIO_ANIMATIONS = [
+  {
     idle: 'mario-idle',
     walk: 'mario-walk',
-    jump: 'mario-jump'
-  }
-}
+    jump: 'mario-jump',
+    crouch: '',
+    throw: '',
+  },
+  {
+    idle: 'mario-grown-idle',
+    walk: 'mario-grown-walk',
+    jump: 'mario-grown-jump',
+    crouch: 'mario-grown-crouch',
+    throw: '',
+  },
+  {
+    idle: 'mario-fire-idle',
+    walk: 'mario-fire-walk',
+    jump: 'mario-fire-jump',
+    crouch: 'mario-fire-crouch',
+    throw: 'mario-fire-throw',
+  },
+]
 
 export function checkControls (game, delta) {
   const { mario, keys } = game
@@ -31,9 +42,11 @@ export function checkControls (game, delta) {
   if (mario.isDead) return
   if (mario.isBlocked) return
 
-  const marioAnimations = mario.isGrown
-    ? MARIO_ANIMATIONS.grown
-    : MARIO_ANIMATIONS.normal
+  // const marioAnimations = mario.isGrown
+  //   ? MARIO_ANIMATIONS.grown
+  //   : MARIO_ANIMATIONS.normal
+
+  const marioAnimations = MARIO_ANIMATIONS[mario.state]
 
   if (Phaser.Input.Keyboard.JustDown(keys.esc)) {
     game.isPaused = !game.isPaused
@@ -41,13 +54,15 @@ export function checkControls (game, delta) {
 
     game.pauseOverlay.setVisible(game.isPaused)
     game.pauseMenu.setVisible(game.isPaused)
+    console.log(mario)
   }
 
   if (playerOptions.playerBlocked && playerOptions.flagRaised) {
     mario.setVelocityX(screenWidth / 8.5)
-    if (playerOptions.playerState === 0) { mario.anims.play(marioAnimations.walk, true).flipX = false }
-    if (playerOptions.playerState === 1) { mario.anims.play(marioAnimations.walk, true).flipX = false }
-    if (playerOptions.playerState === 2) { mario.anims.play(marioAnimations.walk, true) }
+    mario.anims.play(marioAnimations.walk, true).flipX = false
+    // if (playerOptions.playerState === 0) { mario.anims.play(marioAnimations.walk, true).flipX = false }
+    // if (playerOptions.playerState === 1) { mario.anims.play(marioAnimations.walk, true).flipX = false }
+    // if (playerOptions.playerState === 2) { mario.anims.play(marioAnimations.walk, true) }
 
     if (mario.x >= worldWidth - (worldWidth / 75)) {
       game.tweens.add({
@@ -107,11 +122,12 @@ export function checkControls (game, delta) {
   if (isLeftKeyDown) {
     game.smoothedControls.moveLeft(delta)
     if (!playerOptions.playerFiring) {
-      if (playerOptions.playerState === 0) { mario.anims.play(marioAnimations.walk, true).flipX = true }
+      mario.anims.play(marioAnimations.walk, true).flipX = true
+      // if (playerOptions.playerState === 0) { mario.anims.play(marioAnimations.walk, true).flipX = true }
 
-      if (playerOptions.playerState === 1) { mario.anims.play(marioAnimations.walk, true).flipX = true }
+      // if (playerOptions.playerState === 1) { mario.anims.play(marioAnimations.walk, true).flipX = true }
 
-      if (playerOptions.playerState === 2) { mario.anims.play(marioAnimations.walk, true).flipX = true }
+      // if (playerOptions.playerState === 2) { mario.anims.play(marioAnimations.walk, true).flipX = true }
     }
 
     playerOptions.playerController.direction.positive = false
@@ -126,11 +142,12 @@ export function checkControls (game, delta) {
   } else if (isRightKeyDown) {
     game.smoothedControls.moveRight(delta)
     if (!playerOptions.playerFiring) {
-      if (playerOptions.playerState === 0) { mario.anims.play(marioAnimations.walk, true).flipX = false }
+      mario.anims.play(marioAnimations.walk, true).flipX = false
+      // if (playerOptions.playerState === 0) { mario.anims.play(marioAnimations.walk, true).flipX = false }
 
-      if (playerOptions.playerState === 1) { mario.anims.play(marioAnimations.walk, true).flipX = false }
+      // if (playerOptions.playerState === 1) { mario.anims.play(marioAnimations.walk, true).flipX = false }
 
-      if (playerOptions.playerState === 2) { mario.anims.play(marioAnimations.walk, true).flipX = false }
+      // if (playerOptions.playerState === 2) { mario.anims.play(marioAnimations.walk, true).flipX = false }
     }
 
     playerOptions.playerController.direction.positive = true
@@ -146,21 +163,23 @@ export function checkControls (game, delta) {
     if (mario.body.velocity.x !== 0) { game.smoothedControls.reset() }
     if (isMarioTouchingFloor) { mario.setVelocityX(0) }
     if (!(isUpKeyDown) && !playerOptions.playerFiring) {
-      if (playerOptions.playerState === 0) { mario.anims.play(marioAnimations.idle, true) }
+      mario.anims.play(marioAnimations.idle, true)
+      // if (playerOptions.playerState === 0) { mario.anims.play(marioAnimations.idle, true) }
 
-      if (playerOptions.playerState === 1) { mario.anims.play(marioAnimations.idle, true) }
+      // if (playerOptions.playerState === 1) { mario.anims.play(marioAnimations.idle, true) }
 
-      if (playerOptions.playerState === 2) { mario.anims.play(marioAnimations.idle, true) }
+      // if (playerOptions.playerState === 2) { mario.anims.play(marioAnimations.idle, true) }
     }
   }
 
   if (!playerOptions.playerFiring) {
     if (playerOptions.playerState > 0 && isDownKeyDown) {
-      if (playerOptions.playerState === 1) { mario.anims.play('grown-mario-crouch', true) }
+      mario.anims.play(marioAnimations.crouch, true)
+      // if (playerOptions.playerState === 1) { mario.anims.play('grown-mario-crouch', true) }
 
-      if (playerOptions.playerState === 2) { mario.anims.play('fire-mario-crouch', true) }
+      // if (playerOptions.playerState === 2) { mario.anims.play('fire-mario-crouch', true) }
 
-      if (mario.body.touching.down) {
+      if (isMarioTouchingFloor) {
         mario.setVelocityX(0)
       }
 
@@ -168,9 +187,9 @@ export function checkControls (game, delta) {
 
       return
     } else {
-      if (playerOptions.playerState > 0) { mario.body.setSize(14, 32).setOffset(2, 0) }
+      if (mario.state > 0) { mario.body.setSize(14, 32).setOffset(2, 0) }
 
-      if (playerOptions.playerState === 0) { mario.body.setSize(14, 16).setOffset(1.3, 0.5) }
+      if (mario.state === 0) { mario.body.setSize(14, 16).setOffset(1.3, 0.5) }
     }
   }
 
@@ -185,11 +204,12 @@ export function checkControls (game, delta) {
   // Apply jump animation
   if (!isMarioTouchingFloor) {
     if (!playerOptions.playerFiring) {
-      if (playerOptions.playerState === 0) { mario.anims.play(marioAnimations.jump, true) }
+      mario.anims.play(marioAnimations.jump, true)
+      // if (playerOptions.playerState === 0) { mario.anims.play(marioAnimations.jump, true) }
 
-      if (playerOptions.playerState === 1) { mario.anims.play(marioAnimations.jump, true) }
+      // if (playerOptions.playerState === 1) { mario.anims.play(marioAnimations.jump, true) }
 
-      if (playerOptions.playerState === 2) { mario.anims.play(marioAnimations.jump, true) }
+      // if (playerOptions.playerState === 2) { mario.anims.play(marioAnimations.jump, true) }
     }
   }
 }

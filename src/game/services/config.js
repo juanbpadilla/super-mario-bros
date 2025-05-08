@@ -28,7 +28,7 @@ export var emptyBlocksList = []
 
 export const playerOptions = {
   playerController: null,
-  playerState: 0,
+  // playerState: 0,
   playerBlocked: false,
   flagRaised: false,
   playerFiring: false,
