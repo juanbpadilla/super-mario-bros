@@ -225,7 +225,7 @@ function collectItem (mario, item) {
     }, 100)
 
     mario.isBlocked = true
-    mario.isGrown = true
+    // mario.isGrown = true
     mario.state = 1
 
     setTimeout(() => {

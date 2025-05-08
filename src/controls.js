@@ -40,7 +40,7 @@ export function checkControls (game, delta) {
   // const isEscapeKeyDown = keys.esc.isJustDown
 
   if (mario.isDead) return
-  if (mario.isBlocked) return
+  // if (mario.isBlocked) return
 
   // const marioAnimations = mario.isGrown
   //   ? MARIO_ANIMATIONS.grown
@@ -57,12 +57,9 @@ export function checkControls (game, delta) {
     console.log(mario)
   }
 
-  if (playerOptions.playerBlocked && playerOptions.flagRaised) {
+  if (mario.isBlocked && playerOptions.flagRaised) {
     mario.setVelocityX(screenWidth / 8.5)
     mario.anims.play(marioAnimations.walk, true).flipX = false
-    // if (playerOptions.playerState === 0) { mario.anims.play(marioAnimations.walk, true).flipX = false }
-    // if (playerOptions.playerState === 1) { mario.anims.play(marioAnimations.walk, true).flipX = false }
-    // if (playerOptions.playerState === 2) { mario.anims.play(marioAnimations.walk, true) }
 
     if (mario.x >= worldWidth - (worldWidth / 75)) {
       game.tweens.add({
@@ -92,24 +89,13 @@ export function checkControls (game, delta) {
     return
   }
 
-  if (playerOptions.playerBlocked) { return }
-
-  // if (isLeftKeyDown) {
-  //   isMarioTouchingFloor && mario.anims.play(marioAnimations.walk, true)
-  //   mario.x -= 2
-  //   mario.flipX = true // Voltear el sprite de Mario horizontalmente.
-  // } else if (isRightKeyDown) {
-  //   isMarioTouchingFloor && mario.anims.play(marioAnimations.walk, true)
-  //   mario.x += 2
-  //   mario.flipX = false // Restaurar la orientación original del sprite de Mario.
-  // } else if (isMarioTouchingFloor) {
-  //   mario.anims.play(marioAnimations.idle, true) // Reproducir la animación de inactividad.
-  // }
+  // if (playerOptions.playerBlocked) { return }
+  if (mario.isBlocked) return
 
   if (isUpKeyDown && isMarioTouchingFloor) {
     playAudio('jumpsound', game, { volume: 0.1 })
     // mario.setVelocityY(-300); // Aplicar una velocidad negativa en el eje Y para simular un salto.
-    mario.setVelocityY((playerOptions.playerState > 0 && isDownKeyDown) ? -velocityY / 1.25 : -velocityY)
+    mario.setVelocityY((mario.state > 0 && isDownKeyDown) ? -velocityY / 1.25 : -velocityY)
     // isDownKeyDown ? mario.setVelocityY(-velocityY / 1.25) : mario.setVelocityY(-velocityY)
     // mario.anims.play(marioAnimations.jump, true) // Reproducir la animación de salto.
   }
@@ -123,11 +109,6 @@ export function checkControls (game, delta) {
     game.smoothedControls.moveLeft(delta)
     if (!playerOptions.playerFiring) {
       mario.anims.play(marioAnimations.walk, true).flipX = true
-      // if (playerOptions.playerState === 0) { mario.anims.play(marioAnimations.walk, true).flipX = true }
-
-      // if (playerOptions.playerState === 1) { mario.anims.play(marioAnimations.walk, true).flipX = true }
-
-      // if (playerOptions.playerState === 2) { mario.anims.play(marioAnimations.walk, true).flipX = true }
     }
 
     playerOptions.playerController.direction.positive = false
@@ -143,11 +124,6 @@ export function checkControls (game, delta) {
     game.smoothedControls.moveRight(delta)
     if (!playerOptions.playerFiring) {
       mario.anims.play(marioAnimations.walk, true).flipX = false
-      // if (playerOptions.playerState === 0) { mario.anims.play(marioAnimations.walk, true).flipX = false }
-
-      // if (playerOptions.playerState === 1) { mario.anims.play(marioAnimations.walk, true).flipX = false }
-
-      // if (playerOptions.playerState === 2) { mario.anims.play(marioAnimations.walk, true).flipX = false }
     }
 
     playerOptions.playerController.direction.positive = true
@@ -164,20 +140,12 @@ export function checkControls (game, delta) {
     if (isMarioTouchingFloor) { mario.setVelocityX(0) }
     if (!(isUpKeyDown) && !playerOptions.playerFiring) {
       mario.anims.play(marioAnimations.idle, true)
-      // if (playerOptions.playerState === 0) { mario.anims.play(marioAnimations.idle, true) }
-
-      // if (playerOptions.playerState === 1) { mario.anims.play(marioAnimations.idle, true) }
-
-      // if (playerOptions.playerState === 2) { mario.anims.play(marioAnimations.idle, true) }
     }
   }
 
   if (!playerOptions.playerFiring) {
     if (mario.state > 0 && isDownKeyDown) {
       mario.anims.play(marioAnimations.crouch, true)
-      // if (playerOptions.playerState === 1) { mario.anims.play('grown-mario-crouch', true) }
-
-      // if (playerOptions.playerState === 2) { mario.anims.play('fire-mario-crouch', true) }
 
       if (isMarioTouchingFloor) {
         mario.setVelocityX(0)
@@ -205,11 +173,6 @@ export function checkControls (game, delta) {
   if (!isMarioTouchingFloor) {
     if (!playerOptions.playerFiring) {
       mario.anims.play(marioAnimations.jump, true)
-      // if (playerOptions.playerState === 0) { mario.anims.play(marioAnimations.jump, true) }
-
-      // if (playerOptions.playerState === 1) { mario.anims.play(marioAnimations.jump, true) }
-
-      // if (playerOptions.playerState === 2) { mario.anims.play(marioAnimations.jump, true) }
     }
   }
 }
