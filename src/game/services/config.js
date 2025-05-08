@@ -32,5 +32,16 @@ export const playerOptions = {
   // playerBlocked: false,
   flagRaised: false,
   playerFiring: false,
-  timeLeft: 300
+  timeLeft: 300,
+  fireInCooldown: false
+}
+
+export const controlKeys = {
+  JUMP: null,
+  DOWN: null,
+  LEFT: null,
+  RIGHT: null,
+  FIRE: null,
+  PAUSE: null
+
 }

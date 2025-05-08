@@ -4,11 +4,12 @@
 
 import { createAnimations } from './animations.js' // Importar la función createAnimations desde el archivo animations.js.
 import { initAudio, playAudio } from './audio.js'
-import { checkControls } from './controls.js'
+import { checkControls } from './player-controls.js'
 import { drawStartScreen } from './game/drawStartScreen.js'
 import { levelGravity, platformHeight, playerOptions, screenHeight, screenWidth, startOffset, velocityX, worldWidth } from './game/services/config.js'
 import { generateLevel } from './game/ui/generateLevel.js'
 import { initImages, initSpriteSheet } from './spritesheet.js'
+import { createControls } from './game/services/controls.js'
 
 const loadingGif = document.querySelectorAll('.loading-gif')
 
@@ -185,8 +186,9 @@ function create () {
 
   // this.enemy.anims.play('goomba-walk', true)
 
-  this.keys = this.input.keyboard.createCursorKeys() // Crear las teclas de dirección para el control del juego.
-  this.keys.esc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC) // Crear la tecla ESC para salir del juego.
+  // this.keys = this.input.keyboard.createCursorKeys() // Crear las teclas de dirección para el control del juego.
+  // this.keys.esc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC) // Crear la tecla ESC para salir del juego.
+  createControls.call(this)
 
   this.isPaused = false
 

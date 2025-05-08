@@ -2,7 +2,7 @@
 // import Phaser from 'phaser'
 
 import { playAudio } from './audio.js'
-import { playerOptions, screenHeight, screenWidth, velocityY, worldWidth } from './game/services/config.js'
+import { controlKeys, playerOptions, screenHeight, screenWidth, velocityY, worldWidth } from './game/services/config.js'
 
 const MARIO_ANIMATIONS = [
   {
@@ -29,14 +29,19 @@ const MARIO_ANIMATIONS = [
 ]
 
 export function checkControls (game, delta) {
-  const { mario, keys } = game
+  const { mario } = game
 
   const isMarioTouchingFloor = mario.body.touching.down
 
-  const isLeftKeyDown = keys.left.isDown
-  const isRightKeyDown = keys.right.isDown
-  const isUpKeyDown = keys.up.isDown
-  const isDownKeyDown = keys.down.isDown
+  // const isLeftKeyDown = keys.left.isDown
+  // const isRightKeyDown = keys.right.isDown
+  // const isUpKeyDown = keys.up.isDown
+  // const isDownKeyDown = keys.down.isDown
+  const isLeftKeyDown = controlKeys.LEFT.isDown
+  const isRightKeyDown = controlKeys.RIGHT.isDown
+  const isUpKeyDown = controlKeys.JUMP.isDown
+  const isDownKeyDown = controlKeys.DOWN.isDown
+  const isFireKeyDown = controlKeys.FIRE.isDown
   // const isEscapeKeyDown = keys.esc.isJustDown
 
   if (mario.isDead) return
@@ -48,7 +53,8 @@ export function checkControls (game, delta) {
 
   const marioAnimations = MARIO_ANIMATIONS[mario.state]
 
-  if (Phaser.Input.Keyboard.JustDown(keys.esc)) {
+  // if (Phaser.Input.Keyboard.JustDown(keys.esc)) {
+  if (Phaser.Input.Keyboard.JustDown(controlKeys.PAUSE)) {
     game.isPaused = !game.isPaused
     playAudio('pause', game, { volume: 0.2 })
 
@@ -164,10 +170,10 @@ export function checkControls (game, delta) {
   // if (playerOptions.playerState > 0) { mario.body.setSize(14, 32).setOffset(2, 0) }
 
   // if (playerOptions.playerState === 0) { mario.body.setSize(14, 16).setOffset(1.3, 0.5) }
-  // if (isMarioTouchingFloor && playerOptions.playerState === 2 && controlKeys.FIRE.isDown && !fireInCooldown) {
-  //   throwFireball.call(this);
-  //   return;
-  // }
+  if (isMarioTouchingFloor && mario.state === 2 && isFireKeyDown && !playerOptions.fireInCooldown) {
+    throwFireball.call(this)
+    return
+  }
 
   // Apply jump animation
   if (!isMarioTouchingFloor) {
