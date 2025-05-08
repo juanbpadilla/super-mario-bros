@@ -69,6 +69,15 @@ export const createAnimations = (game) => {
     repeat: -1
   })
 
+  // > Mistery blocks
+  game.anims.create({
+    key: 'mistery-block-default',
+    frames: game.anims.generateFrameNumbers('mistery-block', { start: 2, end: 0 }),
+    frameRate: 5,
+    repeat: -1,
+    repeatDelay: 5
+  })
+
   game.anims.create({
     key: 'custom-block-default',
     frames: game.anims.generateFrameNumbers('custom-block', { start: 2, end: 0 }),

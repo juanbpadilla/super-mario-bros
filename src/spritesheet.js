@@ -2,8 +2,10 @@
 // isLevelOverworld = Phaser.Math.Between(0, 100) <= 84;
 // isLevelOverworld = true
 
-// const levelStyle = isLevelOverworld ? 'overworld' : 'underground'
-const levelStyle = 'overworld'
+import { isLevelOverworld } from './game/services/config.js'
+
+const levelStyle = isLevelOverworld ? 'overworld' : 'underground'
+// const levelStyle = 'overworld'
 
 const INIT_SPRITESHEET = [
   {
