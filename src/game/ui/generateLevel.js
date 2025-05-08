@@ -83,7 +83,7 @@ export function generateLevel () {
   invisibleWall2.body.immovable = true
   this.physics.add.collider(this.mario, invisibleWall2)
   this.fallProtectionGroup.add(invisibleWall2)
-  console.log(invisibleWall2)
+  // console.log(invisibleWall2)
 
   if (!isLevelOverworld) {
     this.verticalTube = this.add.tileSprite(worldWidth - screenWidth, screenHeight - platformHeight, 32, screenHeight, 'vertical-extralarge-tube').setScale(screenHeight / 345).setOrigin(1, 1)

@@ -173,7 +173,7 @@ export function checkControls (game, delta) {
   }
 
   if (!playerOptions.playerFiring) {
-    if (playerOptions.playerState > 0 && isDownKeyDown) {
+    if (mario.state > 0 && isDownKeyDown) {
       mario.anims.play(marioAnimations.crouch, true)
       // if (playerOptions.playerState === 1) { mario.anims.play('grown-mario-crouch', true) }
 
