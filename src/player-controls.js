@@ -4,7 +4,7 @@
 import { playAudio } from './audio.js'
 import { controlKeys, playerOptions, screenHeight, screenWidth, velocityY, worldWidth } from './game/services/config.js'
 
-const MARIO_ANIMATIONS = [
+export const MARIO_ANIMATIONS = [
   {
     idle: 'mario-idle',
     walk: 'mario-walk',
@@ -60,7 +60,6 @@ export function checkControls (game, delta) {
 
     game.pauseOverlay.setVisible(game.isPaused)
     game.pauseMenu.setVisible(game.isPaused)
-    console.log(mario)
   }
 
   if (mario.isBlocked && playerOptions.flagRaised) {
@@ -181,4 +180,23 @@ export function checkControls (game, delta) {
       mario.anims.play(marioAnimations.jump, true)
     }
   }
+}
+
+export function applyPlayerInvulnerability (time) {
+  const { mario } = this
+  const blinkAnim = this.tweens.add({
+    targets: mario,
+    duration: 100,
+    alpha: { from: 1, to: 0.2 },
+    ease: 'Linear',
+    repeat: -1,
+    yoyo: true
+  })
+
+  mario.isInvulnerable = true
+  setTimeout(() => {
+    mario.isInvulnerable = false
+    blinkAnim.stop()
+    mario.alpha = 1
+  }, time)
 }

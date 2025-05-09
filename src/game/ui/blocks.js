@@ -1,12 +1,12 @@
-/* eslint-disable no-undef */
-import { emptyBlocksList, screenHeight, screenWidth } from '../services/config.js'
+import { playAudio } from '../../audio.js'
+import { controlKeys, emptyBlocksList, screenHeight, screenWidth } from '../services/config.js'
 
 const mushroomsVelocityX = screenWidth / 15
 
 export function revealHiddenBlock (player, block) {
   if (!player.body.blocked.up) { return }
 
-  this.blockBumpSound.play()
+  playAudio('block-bump', this, { volume: 0.3 })
 
   if (emptyBlocksList.includes(block)) { return }
 
@@ -18,7 +18,7 @@ export function revealHiddenBlock (player, block) {
     duration: 75,
     start: performance.now(),
     y: block.y - screenHeight / 34.5,
-    onComplete: function () {
+    onComplete: () => {
       this.tweens.add({
         targets: block,
         duration: 75,
@@ -29,11 +29,15 @@ export function revealHiddenBlock (player, block) {
     onCompleteScope: this
   })
 
+  // eslint-disable-next-line no-undef
   const random = Phaser.Math.Between(0, 100)
   if (random < 90) {
-    addToScore.call(this, 200, block)
-    this.coinSound.play()
-    const coin = this.physics.add.sprite(block.getBounds().x, block.getBounds().y, 'coin').setScale(screenHeight / 357).setOrigin(0).anims.play('coin-default')
+    // addToScore.call(this, 200, block)
+    // this.coinSound.play()
+    playAudio('coin-pickup', this, { volume: 0.1 })
+    const coin = this.physics.add.sprite(block.getBounds().x, block.getBounds().y, 'coin').setScale(screenHeight / 357)
+      .setOrigin(0)
+      .anims.play('coin-idle')
     coin.immovable = true
     coin.smoothed = true
     coin.depth = 0
@@ -43,13 +47,13 @@ export function revealHiddenBlock (player, block) {
       duration: 250,
       start: performance.now(),
       y: coin.y - (screenHeight / 8.25),
-      onComplete: function () {
+      onComplete: () => {
         this.tweens.add({
           targets: coin,
           duration: 250,
           start: performance.now(),
           y: coin.y + (screenHeight / 10.35),
-          onComplete: function () {
+          onComplete: () => {
             coin.destroy()
           }
         })
@@ -67,6 +71,7 @@ export function revealHiddenBlock (player, block) {
       onComplete: function () {
         if (!mushroom) { return }
 
+        // eslint-disable-next-line no-undef
         if (Phaser.Math.Between(0, 10) <= 4) {
           mushroom.setVelocityX(mushroomsVelocityX)
         } else {
@@ -75,12 +80,12 @@ export function revealHiddenBlock (player, block) {
       },
       onCompleteScope: this
     })
-    this.physics.add.overlap(player, mushroom, consumeMushroom, null, this)
-    this.physics.add.collider(mushroom, this.misteryBlocksGroup.getChildren())
-    this.physics.add.collider(mushroom, this.blocksGroup.getChildren())
-    this.physics.add.collider(mushroom, this.platformGroup.getChildren())
-    this.physics.add.collider(mushroom, this.immovableBlocksGroup.getChildren())
-    this.physics.add.collider(mushroom, this.constructionBlocksGroup.getChildren())
+    // this.physics.add.overlap(player, mushroom, consumeMushroom, null, this)
+    // this.physics.add.collider(mushroom, this.misteryBlocksGroup.getChildren())
+    // this.physics.add.collider(mushroom, this.blocksGroup.getChildren())
+    // this.physics.add.collider(mushroom, this.platformGroup.getChildren())
+    // this.physics.add.collider(mushroom, this.immovableBlocksGroup.getChildren())
+    // this.physics.add.collider(mushroom, this.constructionBlocksGroup.getChildren())
   } else {
     this.powerUpAppearsSound.play()
     const fireFlower = this.physics.add.sprite(block.getBounds().x, block.getBounds().y, 'fire-flower').setScale(screenHeight / 345).setOrigin(0)
@@ -93,7 +98,7 @@ export function revealHiddenBlock (player, block) {
       start: performance.now(),
       y: fireFlower.y - (screenHeight / 23)
     })
-    this.physics.add.overlap(player, fireFlower, consumeFireflower, null, this)
+    // this.physics.add.overlap(player, fireFlower, consumeFireflower, null, this)
     const misteryBlocks = this.misteryBlocksGroup.getChildren()
     this.physics.add.collider(fireFlower, misteryBlocks)
   }
@@ -102,14 +107,15 @@ export function revealHiddenBlock (player, block) {
 export function destroyBlock (player, block) {
   if (!player.body.blocked.up) { return }
 
-  this.blockBumpSound.play()
-  if (playerState === 0 && !block.isImmovable) {
+  //   this.blockBumpSound.play()
+  playAudio('block-bump', this, { volume: 0.3 })
+  if (player.state === 0 && !block.isImmovable) {
     this.tweens.add({
       targets: block,
       duration: 75,
       start: performance.now(),
       y: block.y - screenHeight / 69,
-      onComplete: function () {
+      onComplete: () => {
         this.tweens.add({
           targets: block,
           duration: 75,
@@ -121,15 +127,17 @@ export function destroyBlock (player, block) {
     })
   }
 
-  if (playerState > 0 && !(controlKeys.DOWN.isDown || this.joyStick.down)) {
-    this.breakBlockSound.play()
-    addToScore.call(this, 50)
+  if (player.state > 0 && !(controlKeys.DOWN.isDown)) {
+    // this.breakBlockSound.play()
+    playAudio('break-block', this, { volume: 0.5 })
+    // addToScore.call(this, 50)
     drawDestroyedBlockParticles.call(this, block)
     block.destroy()
   }
 }
 
 export function drawDestroyedBlockParticles (block) {
+  const { player } = this.mario
   const playerBounds = player.getBounds()
   const blockBounds = block.getBounds()
 

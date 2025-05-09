@@ -22,9 +22,9 @@ export const isLevelOverworld = true
 
 // const levelStyle = isLevelOverworld ? 'overworld' : 'underground'
 
-export var worldHolesCoords = []
+export const worldHolesCoords = []
 
-export var emptyBlocksList = []
+export const emptyBlocksList = []
 
 export const playerOptions = {
   playerController: null,

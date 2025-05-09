@@ -1,3 +1,5 @@
+import { playAudio } from '../../audio.js'
+import { applyPlayerInvulnerability, MARIO_ANIMATIONS } from '../../player-controls.js'
 import { isLevelOverworld, platformHeight, platformPiecesWidth, platformPieces, screenHeight, screenWidth, worldWidth, worldHolesCoords } from '../services/config.js'
 import { destroyBlock, revealHiddenBlock } from './blocks.js'
 import { generateStructure } from './structures.js'
@@ -173,8 +175,39 @@ function startLevel (player, trigger) {
   // console.log(player)
   if (!player.body.blocked.right && !trigger.body.blocked.left) { return }
   console.log('start level')
+  playAudio('powerdown', this, { volume: 0.2 })
 
   this.physics.world.setBounds(screenWidth, 0, worldWidth, screenHeight)
+
+  applyPlayerInvulnerability.call(this, 4000)
+
+  player.isBlocked = true
+
+  const marioAnimations = MARIO_ANIMATIONS[player.state]
+  player.setVelocityX(5)
+  // player.anims.play('run', true).flipX = false
+  player.anims.play(marioAnimations.walk, true).flipX = true
+
+  this.cameras.main.fadeOut(900, 0, 0, 0)
+  playAudio('here-we-go', this, { volume: 0.17 })
+
+  setTimeout(() => {
+    if (!isLevelOverworld) {
+      player.y = screenHeight / 5
+      this.musicTheme.stop()
+      this.undergroundMusicTheme.play({ loop: -1 })
+    }
+
+    player.x = screenWidth * 1.1
+    this.cameras.main.pan(screenWidth * 1.5, 0, 0)
+    player.isBlocked = false
+    this.cameras.main.fadeIn(500, 0, 0, 0)
+    // createHUD.call(this);
+    // updateTimer.call(this);
+    this.startScreenTrigger.destroy()
+    // levelStarted = true;
+    // if (this.settingsMenuOpen)hideSettings.call(this);
+  }, 1100)
 }
 
 // function revealHiddenBlock () { console.log('revealHiddenBlock') }

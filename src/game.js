@@ -10,6 +10,7 @@ import { levelGravity, platformHeight, playerOptions, screenHeight, screenWidth,
 import { generateLevel } from './game/ui/generateLevel.js'
 import { initImages, initSpriteSheet } from './spritesheet.js'
 import { createControls } from './game/services/controls.js'
+import { drawWorld } from './game/ui/drawWorld.js'
 
 const loadingGif = document.querySelectorAll('.loading-gif')
 
@@ -162,6 +163,7 @@ function create () {
   this.mario.depth = 3
 
   generateLevel.call(this)
+  drawWorld.call(this, Phaser)
   drawStartScreen.call(this, config)
 
   this.enemy = this.physics.add
@@ -192,15 +194,17 @@ function create () {
 
   this.isPaused = false
 
-  this.pauseOverlay = this.add.rectangle(0, 0, config.width, config.height, 0x000000, 0.0)
+  this.pauseOverlay = this.add.rectangle(0, 0, config.width, config.height, 0x000000, 0.5)
   this.pauseOverlay.setOrigin(0, 0)
   this.pauseOverlay.setVisible(this.isPaused)
+    .depth = 4
 
   this.pauseMenu = this.add.text(config.width / 2, config.height / 2, 'PAUSED', {
     fontFamily: 'pixel',
     fontSize: config.width / 20,
     align: 'center',
   }).setOrigin(0.5, 0.5).setVisible(this.isPaused) // Crear el menú de pausa y ocultarlo inicialmente.
+  this.pauseMenu.depth = 5
 
   this.smoothedControls = new SmoothedHorionztalControl(0.001)
 }
@@ -289,22 +293,22 @@ function onHitEnemy (mario, enemy) {
 
 function update (delta) {
   const { mario } = this // Desestructurar el objeto this para obtener la referencia a Mario.
-  // const cam = this.cameras.main
+  const cam = this.cameras.main
 
   checkControls(this, delta)
 
   // const playerVelocityX = mario.body.velocity.x
   // const camera = this.cameras.main
   // Pausar el juego si se presiona la tecla Escape.
-  // if (this.isPaused) {
-  //   this.pauseOverlay.setPosition(cam.scrollX, cam.scrollY)
-  //   this.pauseMenu.setPosition(cam.scrollX + (cam.width / 2), this.pauseMenu.y)
-  //   this.physics.world.pause()
-  //   this.anims.pauseAll()
-  // } else {
-  //   this.physics.world.resume()
-  //   this.anims.resumeAll()
-  // }
+  if (this.isPaused) {
+    this.pauseOverlay.setPosition(cam.scrollX, cam.scrollY)
+    this.pauseMenu.setPosition(cam.scrollX + (cam.width / 2), this.pauseMenu.y)
+    this.physics.world.pause()
+    this.anims.pauseAll()
+  } else {
+    this.physics.world.resume()
+    this.anims.resumeAll()
+  }
 
   if (mario.y >= config.height) {
     killMario(this)

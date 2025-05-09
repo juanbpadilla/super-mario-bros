@@ -22,7 +22,24 @@ const INIT_AUDIOS = [
   {
     key: 'jumpsound',
     path: 'assets/sound/effects/jump.mp3'
-  }
+  },
+  {
+    key: 'powerdown',
+    path: 'assets/sound/effects/powerdown.mp3'
+  },
+  {
+    key: 'here-we-go',
+    // eslint-disable-next-line no-undef
+    path: Phaser.Math.Between(0, 100) < 98 ? 'assets/sound/effects/here-we-go.mp3' : 'assets/sound/effects/cursed-here-we-go.mp3'
+  },
+  {
+    key: 'block-bump',
+    path: 'assets/sound/effects/block-bump.wav'
+  },
+  {
+    key: 'break-block',
+    path: 'assets/sound/effects/break-block.wav'
+  },
 ]
 
 export const initAudio = ({ load }) => {
