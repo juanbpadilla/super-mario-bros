@@ -2,7 +2,7 @@
 /* global Phaser */
 
 import { createAnimations } from './animations.js' // Importar la función createAnimations desde el archivo animations.js.
-import { initAudio, playAudio } from './audio.js'
+import { initAudio, initSounds } from './audio.js'
 import { checkControls } from './player-controls.js'
 import { drawStartScreen } from './game/ui/drawStartScreen.js'
 import { levelGravity, platformHeight, playerOptions, screenHeight, screenWidth, startOffset, velocityX, worldWidth } from './game/services/config.js'
@@ -27,7 +27,7 @@ const config = {
     default: 'arcade',
     arcade: {
       gravity: { y: levelGravity },
-      debug: false,
+      debug: true,
     },
   },
   scene: {
@@ -135,6 +135,8 @@ function create () {
   this.cameras.main.setBounds(0, 0, worldWidth, screenHeight) // Establecer los límites de la cámara.
   this.cameras.main.isFollowing = false
 
+  initSounds(this)
+
   createAnimations(this) // Crear las animaciones de Mario.
 
   // this.add
@@ -145,9 +147,11 @@ function create () {
   // this.floor = this.physics.add.staticGroup() // Crear un grupo estático para los objetos que no se mueven.
 
   // this.floor
-  //   .create(0, config.height - 16, 'floorbricks')
+  //   .create(480, config.height - 160, 'start-floorbricks')
+  //   .setScale(2)
   //   .setOrigin(0, 0.5)
   //   .refreshBody() // Actualizar el cuerpo físico del objeto para que coincida con su nueva posición.
+  // this.floor.depth = 4
 
   // this.floor
   //   .create(150, config.height - 16, 'floorbricks')
@@ -161,10 +165,11 @@ function create () {
     .setCollideWorldBounds(true) // Evitar que Mario salga de los límites del mundo del juego.
     .setScale(screenHeight / 376)
   this.mario.depth = 3
+  // this.mario.state = 1
 
   generateLevel.call(this)
   drawWorld.call(this)
-  drawStartScreen.call(this, config)
+  drawStartScreen.call(this)
 
   this.enemy = this.physics.add
     .sprite(120, config.height - 30, 'goomba')
@@ -214,35 +219,42 @@ function collectItem (mario, item) {
   item.destroy()
 
   if (key === 'coin') {
-    playAudio('coin-pickup', this, { volume: 0.1 }) // Reproducir el sonido de recoger una moneda.
+    this.coinSound.play()
     addToScore(100, item, this)
   } else if (key === 'supermushroom') {
-    this.physics.world.pause()
+    this.consumePowerUpSound.play()
+    mario.isBlocked = true
     this.anims.pauseAll()
+    // this.physics.world.pause()
+    this.physics.pause()
 
-    playAudio('powerup', this, { volume: 0.1 })
+    mario.setTint(0xfefefe).anims.play('mario-grown-idle')
     let i = 0
-    const interval = setInterval(() => {
+    let interval = setInterval(() => {
       i++
       mario.anims.play(i % 2 === 0
         ? 'mario-grown-idle'
         : 'mario-idle'
       )
+      if (i > 5) {
+        clearInterval(interval)
+        mario.clearTint()
+      }
     }, 100)
 
-    mario.isBlocked = true
     // mario.isGrown = true
-    mario.state = 1
 
     setTimeout(() => {
       // mario.setDisplaySize(18, 32)
       // mario.body.setSize(18, 32)
+      // this.physics.world.resume()
+      this.physics.resume()
       this.anims.resumeAll()
       mario.isBlocked = false
-      clearInterval(interval)
-      this.physics.world.resume()
+      mario.state = 1
+      // clearInterval(interval)
     }, 1000)
-    console.log(mario)
+    // console.log(mario)
   }
 }
 
@@ -280,7 +292,7 @@ function onHitEnemy (mario, enemy) {
     enemy.setVelocityX(0)
     mario.setVelocityY(-200)
 
-    playAudio('goomba-stomp', this)
+    this.goombaStompSound.play()
     addToScore(200, enemy, this)
 
     setTimeout(() => {
@@ -293,22 +305,22 @@ function onHitEnemy (mario, enemy) {
 
 function update (delta) {
   const { mario } = this // Desestructurar el objeto this para obtener la referencia a Mario.
-  const cam = this.cameras.main
+  // const cam = this.cameras.main
 
   checkControls(this, delta)
 
   // const playerVelocityX = mario.body.velocity.x
   // const camera = this.cameras.main
   // Pausar el juego si se presiona la tecla Escape.
-  if (this.isPaused) {
-    this.pauseOverlay.setPosition(cam.scrollX, cam.scrollY)
-    this.pauseMenu.setPosition(cam.scrollX + (cam.width / 2), this.pauseMenu.y)
-    this.physics.world.pause()
-    this.anims.pauseAll()
-  } else {
-    this.physics.world.resume()
-    this.anims.resumeAll()
-  }
+  // if (this.isPaused) {
+  //   this.pauseOverlay.setPosition(cam.scrollX, cam.scrollY)
+  //   this.pauseMenu.setPosition(cam.scrollX + (cam.width / 2), this.pauseMenu.y)
+  //   this.physics.world.pause()
+  //   this.anims.pauseAll()
+  // } else {
+  //   this.physics.world.resume()
+  //   this.anims.resumeAll()
+  // }
 
   if (mario.y >= config.height) {
     killMario(this)
@@ -324,7 +336,7 @@ function killMario (game) {
   mario.anims.play('mario-dead')
   mario.setCollideWorldBounds(false) // Permitir que Mario salga de los límites del mundo del juego.
 
-  playAudio('gameover', game, { volume: 0.2 })
+  game.gameOverSong.play()
 
   mario.body.checkCollision.none = true // Desactivar la colisión de Mario con el mundo.
   mario.setVelocityX(0)

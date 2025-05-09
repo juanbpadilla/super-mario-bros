@@ -1,5 +1,4 @@
 /* global Phaser */
-import { playAudio } from '../../audio.js'
 import { controlKeys, emptyBlocksList, screenHeight, screenWidth } from '../services/config.js'
 
 const mushroomsVelocityX = screenWidth / 15
@@ -7,7 +6,7 @@ const mushroomsVelocityX = screenWidth / 15
 export function revealHiddenBlock (player, block) {
   if (!player.body.blocked.up) { return }
 
-  playAudio('block-bump', this, { volume: 0.3 })
+  this.blockBumpSound.play()
 
   if (emptyBlocksList.includes(block)) { return }
 
@@ -34,7 +33,8 @@ export function revealHiddenBlock (player, block) {
   if (random < 90) {
     // addToScore.call(this, 200, block)
     // this.coinSound.play()
-    playAudio('coin-pickup', this, { volume: 0.1 })
+    this.coinSound.play()
+    // playAudio('coin-pickup', this, { volume: 0.1 })
     const coin = this.physics.add.sprite(block.getBounds().x, block.getBounds().y, 'coin').setScale(screenHeight / 357)
       .setOrigin(0)
       .anims.play('coin-idle')
@@ -106,7 +106,7 @@ export function revealHiddenBlock (player, block) {
 export function destroyBlock (player, block) {
   if (!player.body.blocked.up) { return }
 
-  playAudio('block-bump', this, { volume: 0.3 })
+  this.blockBumpSound.play()
   if (player.state === 0 && !block.isImmovable) {
     this.tweens.add({
       targets: block,
@@ -126,7 +126,7 @@ export function destroyBlock (player, block) {
   }
 
   if (player.state > 0 && !(controlKeys.DOWN.isDown)) {
-    playAudio('break-block', this, { volume: 0.5 })
+    this.breakBlockSound.play()
     // addToScore.call(this, 50)
     drawDestroyedBlockParticles.call(this, block)
     block.destroy()
@@ -134,7 +134,7 @@ export function destroyBlock (player, block) {
 }
 
 export function drawDestroyedBlockParticles (block) {
-  const { player } = this.mario
+  const player = this.mario
   const playerBounds = player.getBounds()
   const blockBounds = block.getBounds()
 

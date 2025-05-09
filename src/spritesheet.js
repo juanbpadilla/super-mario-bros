@@ -2,9 +2,9 @@
 // isLevelOverworld = Phaser.Math.Between(0, 100) <= 84;
 // isLevelOverworld = true
 
-import { isLevelOverworld } from './game/services/config.js'
+import { levelStyle } from './game/services/config.js'
 
-const levelStyle = isLevelOverworld ? 'overworld' : 'underground'
+// const levelStyle = isLevelOverworld ? 'overworld' : 'underground'
 // const levelStyle = 'overworld'
 
 const INIT_SPRITESHEET = [
@@ -83,7 +83,7 @@ export const initSpriteSheet = ({ load }) => {
 }
 
 const INIT_IMAGES = [
-  { key: 'floorbricks', path: 'assets/scenery/overworld/floorbricks.png' },
+  { key: 'floorbricks', path: 'assets/scenery/' + levelStyle + '/floorbricks.png' },
   { key: 'supermushroom', path: 'assets/collectibles/super-mushroom.png' },
   // Load props
   { key: 'cloud1', path: 'assets/scenery/overworld/cloud1.png' },

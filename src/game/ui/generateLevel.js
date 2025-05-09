@@ -1,5 +1,4 @@
 /* global Phaser */
-import { playAudio } from '../../audio.js'
 import { applyPlayerInvulnerability, MARIO_ANIMATIONS } from '../../player-controls.js'
 import { isLevelOverworld, platformHeight, platformPiecesWidth, platformPieces, screenHeight, screenWidth, worldWidth, worldHolesCoords } from '../services/config.js'
 import { destroyBlock, revealHiddenBlock } from './blocks.js'
@@ -181,7 +180,7 @@ function startLevel (player, trigger) {
   // console.log(player)
   if (!player.body.blocked.right && !trigger.body.blocked.left) { return }
   console.log('start level')
-  playAudio('powerdown', this, { volume: 0.2 })
+  this.powerDownSound.play()
 
   this.physics.world.setBounds(screenWidth, 0, worldWidth, screenHeight)
 
@@ -195,7 +194,7 @@ function startLevel (player, trigger) {
   player.anims.play(marioAnimations.walk, true).flipX = true
 
   this.cameras.main.fadeOut(900, 0, 0, 0)
-  playAudio('here-we-go', this, { volume: 0.17 })
+  this.hereWeGoSound.play()
 
   setTimeout(() => {
     if (!isLevelOverworld) {

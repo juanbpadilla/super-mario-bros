@@ -1,6 +1,5 @@
 /* global Phaser */
 
-import { playAudio } from './audio.js'
 import { controlKeys, playerOptions, screenHeight, screenWidth, velocityY, worldWidth } from './game/services/config.js'
 
 export const MARIO_ANIMATIONS = [
@@ -44,18 +43,14 @@ export function checkControls (game, delta) {
   // const isEscapeKeyDown = keys.esc.isJustDown
 
   if (mario.isDead) return
-  // if (mario.isBlocked) return
-
-  // const marioAnimations = mario.isGrown
-  //   ? MARIO_ANIMATIONS.grown
-  //   : MARIO_ANIMATIONS.normal
 
   const marioAnimations = MARIO_ANIMATIONS[mario.state]
 
   // if (Phaser.Input.Keyboard.JustDown(keys.esc)) {
   if (Phaser.Input.Keyboard.JustDown(controlKeys.PAUSE)) {
     game.isPaused = !game.isPaused
-    playAudio('pause', game, { volume: 0.2 })
+    game.pauseSound.play()
+    // playAudio('pause', game, { volume: 0.2 })
 
     game.pauseOverlay.setVisible(game.isPaused)
     game.pauseMenu.setVisible(game.isPaused)
@@ -97,7 +92,8 @@ export function checkControls (game, delta) {
   if (mario.isBlocked) return
 
   if (isUpKeyDown && isMarioTouchingFloor) {
-    playAudio('jumpsound', game, { volume: 0.1 })
+    game.jumpSound.play()
+    // playAudio('jumpsound', game, { volume: 0.1 })
     // mario.setVelocityY(-300); // Aplicar una velocidad negativa en el eje Y para simular un salto.
     mario.setVelocityY((mario.state > 0 && isDownKeyDown) ? -velocityY / 1.25 : -velocityY)
     // isDownKeyDown ? mario.setVelocityY(-velocityY / 1.25) : mario.setVelocityY(-velocityY)

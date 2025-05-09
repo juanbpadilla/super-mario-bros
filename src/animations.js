@@ -130,6 +130,14 @@ export const createAnimations = (game) => {
     repeatDelay: 5
   })
 
+  // > Brick debris
+  game.anims.create({
+    key: 'brick-debris-default',
+    frames: game.anims.generateFrameNumbers('brick-debris', { start: 0, end: 3 }),
+    frameRate: 4,
+    repeat: -1,
+  })
+
   // > NPC
   game.anims.create({
     key: 'npc-default',

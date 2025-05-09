@@ -20,7 +20,7 @@ export const isLevelOverworld = true
 // isLevelOverworld = Phaser.Math.Between(0, 100) <= 84;
 // isLevelOverworld = true
 
-// const levelStyle = isLevelOverworld ? 'overworld' : 'underground'
+export const levelStyle = isLevelOverworld ? 'overworld' : 'underground'
 
 export const worldHolesCoords = []
 
