@@ -31,10 +31,6 @@ export function checkControls (game, delta) {
 
   const isMarioTouchingFloor = mario.body.touching.down
 
-  // const isLeftKeyDown = keys.left.isDown
-  // const isRightKeyDown = keys.right.isDown
-  // const isUpKeyDown = keys.up.isDown
-  // const isDownKeyDown = keys.down.isDown
   const isLeftKeyDown = controlKeys.LEFT.isDown
   const isRightKeyDown = controlKeys.RIGHT.isDown
   const isUpKeyDown = controlKeys.JUMP.isDown
@@ -49,11 +45,25 @@ export function checkControls (game, delta) {
   // if (Phaser.Input.Keyboard.JustDown(keys.esc)) {
   if (Phaser.Input.Keyboard.JustDown(controlKeys.PAUSE)) {
     game.isPaused = !game.isPaused
-    game.pauseSound.play()
     // playAudio('pause', game, { volume: 0.2 })
 
     game.pauseOverlay.setVisible(game.isPaused)
     game.pauseMenu.setVisible(game.isPaused)
+
+    const camera = game.cameras.main
+    // Pausar el juego si se presiona la tecla Escape.
+    if (game.isPaused) {
+      game.musicTheme.pause()
+      game.pauseSound.play()
+      game.pauseOverlay.setPosition(camera.scrollX, camera.scrollY)
+      game.pauseMenu.setPosition(camera.scrollX + (camera.width / 2), game.pauseMenu.y)
+      game.physics.world.pause()
+      game.anims.pauseAll()
+    } else {
+      game.musicTheme.resume()
+      game.physics.world.resume()
+      game.anims.resumeAll()
+    }
   }
 
   if (mario.isBlocked && playerOptions.flagRaised) {

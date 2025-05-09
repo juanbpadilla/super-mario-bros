@@ -139,25 +139,6 @@ function create () {
 
   createAnimations(this) // Crear las animaciones de Mario.
 
-  // this.add
-  //   .image(100, 50, 'cloud1')
-  //   .setOrigin(0, 0) // Cambia el origen de la imagen a la esquina superior izquierda.
-  //   .setScale(0.15)
-
-  // this.floor = this.physics.add.staticGroup() // Crear un grupo estático para los objetos que no se mueven.
-
-  // this.floor
-  //   .create(480, config.height - 160, 'start-floorbricks')
-  //   .setScale(2)
-  //   .setOrigin(0, 0.5)
-  //   .refreshBody() // Actualizar el cuerpo físico del objeto para que coincida con su nueva posición.
-  // this.floor.depth = 4
-
-  // this.floor
-  //   .create(150, config.height - 16, 'floorbricks')
-  //   .setOrigin(0, 0.5)
-  //   .refreshBody() // Actualizar el cuerpo físico del objeto para que coincida con su nueva posición.
-
   this.mario = this.physics.add
     .sprite(startOffset, screenHeight - platformHeight, 'mario')
     .setOrigin(1)
@@ -188,13 +169,8 @@ function create () {
   // this.physics.add.collider(this.mario, this.floor) // Agregar colisión entre Mario y el suelo.
   // this.physics.add.collider(this.enemy, this.floor)
   this.physics.add.collider(this.mario, this.enemy, onHitEnemy, null, this)
-
   // this.cameras.main.startFollow(this.mario) // Hacer que la cámara siga a Mario.
-
   // this.enemy.anims.play('goomba-walk', true)
-
-  // this.keys = this.input.keyboard.createCursorKeys() // Crear las teclas de dirección para el control del juego.
-  // this.keys.esc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC) // Crear la tecla ESC para salir del juego.
   createControls.call(this)
 
   this.isPaused = false
@@ -310,17 +286,6 @@ function update (delta) {
   checkControls(this, delta)
 
   // const playerVelocityX = mario.body.velocity.x
-  // const camera = this.cameras.main
-  // Pausar el juego si se presiona la tecla Escape.
-  // if (this.isPaused) {
-  //   this.pauseOverlay.setPosition(cam.scrollX, cam.scrollY)
-  //   this.pauseMenu.setPosition(cam.scrollX + (cam.width / 2), this.pauseMenu.y)
-  //   this.physics.world.pause()
-  //   this.anims.pauseAll()
-  // } else {
-  //   this.physics.world.resume()
-  //   this.anims.resumeAll()
-  // }
 
   if (mario.y >= config.height) {
     killMario(this)
