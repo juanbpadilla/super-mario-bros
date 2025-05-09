@@ -104,6 +104,15 @@ export const createAnimations = (game) => {
     repeat: -1
   })
 
+  // > Ground coin
+  game.anims.create({
+    key: 'ground-coin-default',
+    frames: game.anims.generateFrameNumbers('ground-coin', { start: 2, end: 0 }),
+    frameRate: 5,
+    repeat: -1,
+    repeatDelay: 5
+  })
+
   // > Mistery blocks
   game.anims.create({
     key: 'mistery-block-default',

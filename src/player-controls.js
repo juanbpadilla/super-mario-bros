@@ -1,5 +1,4 @@
-/* eslint-disable no-undef */
-// import Phaser from 'phaser'
+/* global Phaser */
 
 import { playAudio } from './audio.js'
 import { controlKeys, playerOptions, screenHeight, screenWidth, velocityY, worldWidth } from './game/services/config.js'
@@ -170,7 +169,7 @@ export function checkControls (game, delta) {
 
   // if (playerOptions.playerState === 0) { mario.body.setSize(14, 16).setOffset(1.3, 0.5) }
   if (isMarioTouchingFloor && mario.state === 2 && isFireKeyDown && !playerOptions.fireInCooldown) {
-    throwFireball.call(this)
+    // throwFireball.call(this)
     return
   }
 

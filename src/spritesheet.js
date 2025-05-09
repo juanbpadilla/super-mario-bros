@@ -53,7 +53,7 @@ const INIT_SPRITESHEET = [
   {
     key: 'mistery-block',
     path: 'assets/blocks/' + levelStyle + '/misteryBlock.png',
-    frameWidth: 15,
+    frameWidth: 16,
     frameHeight: 16
   },
   {

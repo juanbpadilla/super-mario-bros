@@ -1,3 +1,4 @@
+/* global Phaser */
 const INIT_AUDIOS = [
   {
     key: 'gameover',
@@ -29,7 +30,6 @@ const INIT_AUDIOS = [
   },
   {
     key: 'here-we-go',
-    // eslint-disable-next-line no-undef
     path: Phaser.Math.Between(0, 100) < 98 ? 'assets/sound/effects/here-we-go.mp3' : 'assets/sound/effects/cursed-here-we-go.mp3'
   },
   {

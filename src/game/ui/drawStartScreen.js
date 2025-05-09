@@ -1,4 +1,4 @@
-import { platformHeight, screenHeight, screenWidth } from './services/config.js'
+import { platformHeight, screenHeight, screenWidth } from '../services/config.js'
 
 export function drawStartScreen () {
   const player = this.mario

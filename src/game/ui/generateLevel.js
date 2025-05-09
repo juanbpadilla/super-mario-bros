@@ -1,3 +1,4 @@
+/* global Phaser */
 import { playAudio } from '../../audio.js'
 import { applyPlayerInvulnerability, MARIO_ANIMATIONS } from '../../player-controls.js'
 import { isLevelOverworld, platformHeight, platformPiecesWidth, platformPieces, screenHeight, screenWidth, worldWidth, worldHolesCoords } from '../services/config.js'
@@ -32,7 +33,6 @@ export function generateLevel () {
 
   for (let i = 0; i <= platformPieces; i++) {
     // Holes will have a 10% chance of spawning
-    // eslint-disable-next-line no-undef
     const number = Phaser.Math.Between(0, 100)
 
     // Check if its not a hole, this means is not that 20%, is not in the spawn safe area and is not close to the end castle.
@@ -40,7 +40,9 @@ export function generateLevel () {
       lastWasHole--
 
       // > Create platform
-      const Npiece = this.add.tileSprite(pieceStart, screenHeight, platformPiecesWidth, platformHeight, 'floorbricks').setScale(2).setOrigin(0, 0.5)
+      const Npiece = this.add.tileSprite(pieceStart, screenHeight, platformPiecesWidth, platformHeight, 'floorbricks')
+        .setScale(2)
+        .setOrigin(0, 0.5)
       this.physics.add.existing(Npiece)
       Npiece.body.immovable = true
       Npiece.body.allowGravity = false
@@ -65,13 +67,17 @@ export function generateLevel () {
       })
 
       lastWasHole = 2
-      this.fallProtectionGroup.add(this.add.rectangle(pieceStart + platformPiecesWidth * 2, screenHeight - platformHeight, 5, 5).setOrigin(0, 1))
-      this.fallProtectionGroup.add(this.add.rectangle(pieceStart, screenHeight - platformHeight, 5, 5).setOrigin(1, 1))
+      this.fallProtectionGroup.add(this.add.rectangle(pieceStart + platformPiecesWidth * 2, screenHeight - platformHeight, 5, 5)
+        .setOrigin(0, 1))
+      this.fallProtectionGroup.add(this.add.rectangle(pieceStart, screenHeight - platformHeight, 5, 5)
+        .setOrigin(1, 1))
     }
     pieceStart += platformPiecesWidth * 2
   }
 
-  this.startScreenTrigger = this.add.tileSprite(screenWidth, screenHeight - platformHeight, 32, 28, 'horizontal-tube').setScale(screenHeight / 345).setOrigin(1, 1)
+  this.startScreenTrigger = this.add.tileSprite(screenWidth, screenHeight - platformHeight, 32, 28, 'horizontal-tube')
+    .setScale(screenHeight / 345)
+    .setOrigin(1, 1)
   this.startScreenTrigger.depth = 4
   this.physics.add.existing(this.startScreenTrigger)
   this.startScreenTrigger.body.allowGravity = false

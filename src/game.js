@@ -1,11 +1,10 @@
 /* eslint-disable prefer-const */
-/* eslint-disable no-new */
 /* global Phaser */
 
 import { createAnimations } from './animations.js' // Importar la función createAnimations desde el archivo animations.js.
 import { initAudio, playAudio } from './audio.js'
 import { checkControls } from './player-controls.js'
-import { drawStartScreen } from './game/drawStartScreen.js'
+import { drawStartScreen } from './game/ui/drawStartScreen.js'
 import { levelGravity, platformHeight, playerOptions, screenHeight, screenWidth, startOffset, velocityX, worldWidth } from './game/services/config.js'
 import { generateLevel } from './game/ui/generateLevel.js'
 import { initImages, initSpriteSheet } from './spritesheet.js'
@@ -28,7 +27,7 @@ const config = {
     default: 'arcade',
     arcade: {
       gravity: { y: levelGravity },
-      debug: true,
+      debug: false,
     },
   },
   scene: {
@@ -38,6 +37,7 @@ const config = {
   },
 }
 
+// eslint-disable-next-line no-new
 new Phaser.Game(config) // Crear una nueva instancia del juego con la configuración especificada.
 //  this -> game -> el juego que estamos construyendo
 
@@ -163,7 +163,7 @@ function create () {
   this.mario.depth = 3
 
   generateLevel.call(this)
-  drawWorld.call(this, Phaser)
+  drawWorld.call(this)
   drawStartScreen.call(this, config)
 
   this.enemy = this.physics.add

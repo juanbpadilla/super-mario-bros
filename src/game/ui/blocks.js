@@ -1,3 +1,4 @@
+/* global Phaser */
 import { playAudio } from '../../audio.js'
 import { controlKeys, emptyBlocksList, screenHeight, screenWidth } from '../services/config.js'
 
@@ -29,7 +30,6 @@ export function revealHiddenBlock (player, block) {
     onCompleteScope: this
   })
 
-  // eslint-disable-next-line no-undef
   const random = Phaser.Math.Between(0, 100)
   if (random < 90) {
     // addToScore.call(this, 200, block)
@@ -71,7 +71,6 @@ export function revealHiddenBlock (player, block) {
       onComplete: function () {
         if (!mushroom) { return }
 
-        // eslint-disable-next-line no-undef
         if (Phaser.Math.Between(0, 10) <= 4) {
           mushroom.setVelocityX(mushroomsVelocityX)
         } else {
@@ -107,7 +106,6 @@ export function revealHiddenBlock (player, block) {
 export function destroyBlock (player, block) {
   if (!player.body.blocked.up) { return }
 
-  //   this.blockBumpSound.play()
   playAudio('block-bump', this, { volume: 0.3 })
   if (player.state === 0 && !block.isImmovable) {
     this.tweens.add({
@@ -128,7 +126,6 @@ export function destroyBlock (player, block) {
   }
 
   if (player.state > 0 && !(controlKeys.DOWN.isDown)) {
-    // this.breakBlockSound.play()
     playAudio('break-block', this, { volume: 0.5 })
     // addToScore.call(this, 50)
     drawDestroyedBlockParticles.call(this, block)

@@ -1,4 +1,4 @@
-/* eslint-disable no-undef */
+/* global Phaser */
 import { isLevelOverworld, platformHeight, screenHeight } from '../services/config.js'
 
 export function generateStructure (pieceStart) {
@@ -52,8 +52,7 @@ export function generateStructure (pieceStart) {
         this.misteryBlocksGroup.add(this.add.sprite(pieceStart, screenHeight - (platformHeight * 2.9), 'mistery-block').setScale(screenHeight / 345).setOrigin(1, 0.5))
         return Phaser.Math.Between(1, 3)
       case 4: {
-        // eslint-disable-next-line prefer-const
-        let random = Phaser.Math.Between(0, 4)
+        const random = Phaser.Math.Between(0, 4)
         switch (random) {
           case 0:
             this.misteryBlocksGroup.add(this.add.sprite(pieceStart, screenHeight - (platformHeight * 2.9), 'mistery-block').setScale(screenHeight / 345))

@@ -1,6 +1,7 @@
+/* global Phaser */
 import { isLevelOverworld, platformHeight, platformPiecesWidth, playerOptions, screenHeight, screenWidth, worldHolesCoords, worldWidth } from '../services/config.js'
 
-export function drawWorld (Phaser) {
+export function drawWorld () {
   // Drawing scenery props
   const player = this.mario
 
@@ -72,7 +73,6 @@ function generateRandomCoordinate (entitie = false, ground = true) {
   const startPos = entitie ? screenWidth * 1.5 : screenWidth
   const endPos = entitie ? worldWidth - screenWidth * 3 : worldWidth
 
-  // eslint-disable-next-line no-undef
   const coordinate = Phaser.Math.Between(startPos, endPos)
 
   if (!ground) return coordinate
