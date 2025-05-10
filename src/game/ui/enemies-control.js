@@ -35,14 +35,26 @@ export function createEnemies () {
     const blocks = this.blocksGroup.getChildren()
     this.physics.add.collider(goomba, blocks)
 
+    const misteryBlocks = this.misteryBlocksGroup.getChildren()
+    this.physics.add.collider(goomba, misteryBlocks)
+
+    const goombas = this.goombasGroup.getChildren()
+    this.physics.add.collider(goomba, goombas)
+    this.physics.add.collider(goomba, this.finalFlagMast)
     this.physics.add.overlap(mario, goomba, onHitEnemy, null, this)
   }
+
+  this.physics.add.collider(this.goombasGroup.getChildren(), this.immovableBlocksGroup.getChildren())
+  this.physics.add.collider(this.goombasGroup.getChildren(), this.fallProtectionGroup.getChildren())
+  this.physics.add.collider(this.goombasGroup.getChildren(), this.finalTrigger)
 
   setInterval(clearEnemies.call(this), 250)
 }
 
 function onHitEnemy (mario, enemy) {
   const enemyBeingCrushed = mario.body.touching.down && enemy.body.touching.up
+
+  if (this.flagRaised) return
 
   if (mario.isInvulnerable) {
     if (!enemyBeingCrushed) return

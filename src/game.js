@@ -302,7 +302,6 @@ export function killMario () {
   mario.anims.play('mario-dead', true)
   mario.body.enable = false
   this.finalFlagMast.body.enable = false
-  console.log(mario)
   mario.setCollideWorldBounds(false) // Permitir que Mario salga de los límites del mundo del juego.
 
   const goombas = this.goombasGroup.getChildren()
