@@ -1,5 +1,13 @@
 /* global Phaser */
-import { isLevelOverworld, platformHeight, platformPiecesWidth, playerOptions, screenHeight, screenWidth, worldHolesCoords, worldWidth } from '../services/config.js'
+import {
+  isLevelOverworld,
+  platformHeight,
+  playerOptions,
+  screenHeight,
+  screenWidth,
+  worldWidth
+} from '../services/config.js'
+import { generateRandomCoordinate } from '../services/randomCoordinate.js'
 
 export function drawWorld () {
   // Drawing scenery props
@@ -67,21 +75,4 @@ export function drawWorld () {
 
   // > Castle
   this.add.image(worldWidth - (worldWidth / 75), propsY, 'castle').setOrigin(0.5, 1).setScale(screenHeight / 300)
-}
-
-function generateRandomCoordinate (entitie = false, ground = true) {
-  const startPos = entitie ? screenWidth * 1.5 : screenWidth
-  const endPos = entitie ? worldWidth - screenWidth * 3 : worldWidth
-
-  const coordinate = Phaser.Math.Between(startPos, endPos)
-
-  if (!ground) return coordinate
-
-  for (const hole of worldHolesCoords) {
-    if (coordinate >= hole.start - platformPiecesWidth * 1.5 && coordinate <= hole.end) {
-      return generateRandomCoordinate.call(this, entitie, ground)
-    }
-  }
-
-  return coordinate
 }

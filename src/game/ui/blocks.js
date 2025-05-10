@@ -32,9 +32,7 @@ export function revealHiddenBlock (player, block) {
   const random = Phaser.Math.Between(0, 100)
   if (random < 90) {
     // addToScore.call(this, 200, block)
-    // this.coinSound.play()
     this.coinSound.play()
-    // playAudio('coin-pickup', this, { volume: 0.1 })
     const coin = this.physics.add.sprite(block.getBounds().x, block.getBounds().y, 'coin').setScale(screenHeight / 357)
       .setOrigin(0)
       .anims.play('coin-idle')

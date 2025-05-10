@@ -1,33 +1,22 @@
 /* global Phaser */
 
-import { controlKeys, playerOptions, screenHeight, screenWidth, velocityY, worldWidth } from './game/services/config.js'
+import { killMario } from './game.js'
+import { controlKeys, platformHeight, playerOptions, screenHeight, screenWidth, startOffset, velocityY, worldWidth } from './game/services/config.js'
+import { MARIO_ANIMATIONS } from './game/services/mario_animations.js'
 
-export const MARIO_ANIMATIONS = [
-  {
-    idle: 'mario-idle',
-    walk: 'mario-walk',
-    jump: 'mario-jump',
-    crouch: '',
-    throw: '',
-  },
-  {
-    idle: 'mario-grown-idle',
-    walk: 'mario-grown-walk',
-    jump: 'mario-grown-jump',
-    crouch: 'mario-grown-crouch',
-    throw: '',
-  },
-  {
-    idle: 'mario-fire-idle',
-    walk: 'mario-fire-walk',
-    jump: 'mario-fire-jump',
-    crouch: 'mario-fire-crouch',
-    throw: 'mario-fire-throw',
-  },
-]
+export function createPlayer () {
+  this.mario = this.physics.add
+    .sprite(startOffset, screenHeight - platformHeight, 'mario')
+    .setOrigin(1)
+    .setBounce(0)
+    .setCollideWorldBounds(true) // Evitar que Mario salga de los límites del mundo del juego.
+    .setScale(screenHeight / 376)
+  this.mario.depth = 3
+  // this.mario.state = 1
+}
 
-export function checkControls (game, delta) {
-  const { mario } = game
+export function checkControls (delta) {
+  const { mario } = this
 
   const isMarioTouchingFloor = mario.body.touching.down
 
@@ -44,25 +33,25 @@ export function checkControls (game, delta) {
 
   // if (Phaser.Input.Keyboard.JustDown(keys.esc)) {
   if (Phaser.Input.Keyboard.JustDown(controlKeys.PAUSE)) {
-    game.isPaused = !game.isPaused
+    this.isPaused = !this.isPaused
     // playAudio('pause', game, { volume: 0.2 })
 
-    game.pauseOverlay.setVisible(game.isPaused)
-    game.pauseMenu.setVisible(game.isPaused)
+    this.pauseOverlay.setVisible(this.isPaused)
+    this.pauseMenu.setVisible(this.isPaused)
 
-    const camera = game.cameras.main
+    const camera = this.cameras.main
     // Pausar el juego si se presiona la tecla Escape.
-    if (game.isPaused) {
-      game.musicTheme.pause()
-      game.pauseSound.play()
-      game.pauseOverlay.setPosition(camera.scrollX, camera.scrollY)
-      game.pauseMenu.setPosition(camera.scrollX + (camera.width / 2), game.pauseMenu.y)
-      game.physics.world.pause()
-      game.anims.pauseAll()
+    if (this.isPaused) {
+      this.musicTheme.pause()
+      this.pauseSound.play()
+      this.pauseOverlay.setPosition(camera.scrollX, camera.scrollY)
+      this.pauseMenu.setPosition(camera.scrollX + (camera.width / 2), this.pauseMenu.y)
+      this.physics.world.pause()
+      this.anims.pauseAll()
     } else {
-      game.musicTheme.resume()
-      game.physics.world.resume()
-      game.anims.resumeAll()
+      this.musicTheme.resume()
+      this.physics.world.resume()
+      this.anims.resumeAll()
     }
   }
 
@@ -71,14 +60,14 @@ export function checkControls (game, delta) {
     mario.anims.play(marioAnimations.walk, true).flipX = false
 
     if (mario.x >= worldWidth - (worldWidth / 75)) {
-      game.tweens.add({
+      this.tweens.add({
         targets: mario,
         duration: 75,
         alpha: 0
       })
     }
     setTimeout(() => {
-      game.gameWinned = true
+      this.gameWinned = true
       mario.destroy()
       // winScreen.call(this);
     }, 5000)
@@ -93,7 +82,9 @@ export function checkControls (game, delta) {
 
   // Check if player has fallen
   if (mario.y > screenHeight - 10 || playerOptions.timeLeft <= 0) {
-    game.gameOver = true
+    this.gameOver = true
+    killMario.call(this)
+    // console.log(mario)
     // gameOverFunc.call(this);
     return
   }
@@ -102,7 +93,7 @@ export function checkControls (game, delta) {
   if (mario.isBlocked) return
 
   if (isUpKeyDown && isMarioTouchingFloor) {
-    game.jumpSound.play()
+    this.jumpSound.play()
     // playAudio('jumpsound', game, { volume: 0.1 })
     // mario.setVelocityY(-300); // Aplicar una velocidad negativa en el eje Y para simular un salto.
     mario.setVelocityY((mario.state > 0 && isDownKeyDown) ? -velocityY / 1.25 : -velocityY)
@@ -116,7 +107,7 @@ export function checkControls (game, delta) {
   let newVelocityX
 
   if (isLeftKeyDown) {
-    game.smoothedControls.moveLeft(delta)
+    this.smoothedControls.moveLeft(delta)
     if (!playerOptions.playerFiring) {
       mario.anims.play(marioAnimations.walk, true).flipX = true
     }
@@ -127,11 +118,11 @@ export function checkControls (game, delta) {
     // This simulates a player controlled acceleration.
     oldVelocityX = mario.body.velocity.x
     targetVelocityX = -playerOptions.playerController.speed.run
-    newVelocityX = Phaser.Math.Linear(oldVelocityX, targetVelocityX, -game.smoothedControls.value)
+    newVelocityX = Phaser.Math.Linear(oldVelocityX, targetVelocityX, -this.smoothedControls.value)
 
     mario.setVelocityX(newVelocityX)
   } else if (isRightKeyDown) {
-    game.smoothedControls.moveRight(delta)
+    this.smoothedControls.moveRight(delta)
     if (!playerOptions.playerFiring) {
       mario.anims.play(marioAnimations.walk, true).flipX = false
     }
@@ -142,11 +133,11 @@ export function checkControls (game, delta) {
     // This simulates a player controlled acceleration.
     oldVelocityX = mario.body.velocity.x
     targetVelocityX = playerOptions.playerController.speed.run
-    newVelocityX = Phaser.Math.Linear(oldVelocityX, targetVelocityX, game.smoothedControls.value)
+    newVelocityX = Phaser.Math.Linear(oldVelocityX, targetVelocityX, this.smoothedControls.value)
 
     mario.setVelocityX(newVelocityX)
   } else {
-    if (mario.body.velocity.x !== 0) { game.smoothedControls.reset() }
+    if (mario.body.velocity.x !== 0) { this.smoothedControls.reset() }
     if (isMarioTouchingFloor) { mario.setVelocityX(0) }
     if (!(isUpKeyDown) && !playerOptions.playerFiring) {
       mario.anims.play(marioAnimations.idle, true)

@@ -1,6 +1,7 @@
 /* global Phaser */
-import { applyPlayerInvulnerability, MARIO_ANIMATIONS } from '../../player-controls.js'
+import { applyPlayerInvulnerability } from '../../player-controls.js'
 import { isLevelOverworld, platformHeight, platformPiecesWidth, platformPieces, screenHeight, screenWidth, worldWidth, worldHolesCoords } from '../services/config.js'
+import { MARIO_ANIMATIONS } from '../services/mario_animations.js'
 import { destroyBlock, revealHiddenBlock } from './blocks.js'
 import { generateStructure } from './structures.js'
 
@@ -191,7 +192,7 @@ function startLevel (player, trigger) {
   const marioAnimations = MARIO_ANIMATIONS[player.state]
   player.setVelocityX(5)
   // player.anims.play('run', true).flipX = false
-  player.anims.play(marioAnimations.walk, true).flipX = true
+  player.anims.play(marioAnimations.walk, true).flipX = false
 
   this.cameras.main.fadeOut(900, 0, 0, 0)
   this.hereWeGoSound.play()
@@ -210,7 +211,8 @@ function startLevel (player, trigger) {
     // createHUD.call(this);
     // updateTimer.call(this);
     this.startScreenTrigger.destroy()
-    // levelStarted = true;
+    this.levelStarted = true
+    this.musicTheme.play({ loop: -1 })
     // if (this.settingsMenuOpen)hideSettings.call(this);
   }, 1100)
 }

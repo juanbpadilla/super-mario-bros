@@ -33,7 +33,7 @@ export const playerOptions = {
   flagRaised: false,
   playerFiring: false,
   timeLeft: 300,
-  fireInCooldown: false
+  fireInCooldown: false,
 }
 
 export const controlKeys = {

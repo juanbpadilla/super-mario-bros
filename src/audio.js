@@ -98,8 +98,8 @@ export const initSounds = (game) => {
   game.musicGroup = game.add.group()
   game.effectsGroup = game.add.group()
 
-  game.musicTheme = game.sound.add('music', { volume: 0.15 })
-  game.musicTheme.play({ loop: -1 })
+  game.musicTheme = game.sound.add('music', { volume: 0.2 })
+  // game.musicTheme.play({ loop: -1 })
   game.musicGroup.add(game.musicTheme)
 
   game.undergroundMusicTheme = game.sound.add('underground-music', { volume: 0.15 })

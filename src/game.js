@@ -1,11 +1,10 @@
-/* eslint-disable prefer-const */
 /* global Phaser */
 
 import { createAnimations } from './animations.js' // Importar la función createAnimations desde el archivo animations.js.
 import { initAudio, initSounds } from './audio.js'
-import { checkControls } from './player-controls.js'
+import { checkControls, createPlayer } from './player-controls.js'
 import { drawStartScreen } from './game/ui/drawStartScreen.js'
-import { levelGravity, platformHeight, playerOptions, screenHeight, screenWidth, startOffset, velocityX, worldWidth } from './game/services/config.js'
+import { levelGravity, platformHeight, playerOptions, screenHeight, screenWidth, velocityX, velocityY, worldWidth } from './game/services/config.js'
 import { generateLevel } from './game/ui/generateLevel.js'
 import { initImages, initSpriteSheet } from './spritesheet.js'
 import { createControls } from './game/services/controls.js'
@@ -16,9 +15,7 @@ const loadingGif = document.querySelectorAll('.loading-gif')
 const config = {
   autofocus: false,
   type: Phaser.AUTO, // Tipo de renderizado (WebGL o Canvas) especificado automáticamente por Phaser.
-  // width: 256,
   width: screenWidth,
-  // height: 244,
   height: screenHeight,
   backgroundColor: 0x049cd8,
   parent: 'game', // ID del elemento HTML donde se renderizará el juego.
@@ -41,7 +38,7 @@ const config = {
 new Phaser.Game(config) // Crear una nueva instancia del juego con la configuración especificada.
 //  this -> game -> el juego que estamos construyendo
 
-let SmoothedHorionztalControl = new Phaser.Class({
+const SmoothedHorionztalControl = new Phaser.Class({
 
   initialize:
 
@@ -106,10 +103,7 @@ function preload () {
   this.load.bitmapFont('carrier_command', 'assets/fonts/carrier_command.png', 'assets/fonts/carrier_command.xml')
 
   initImages(this)
-
   initSpriteSheet(this)
-
-  // --- audio ---
   initAudio(this)
 }
 
@@ -127,6 +121,9 @@ function create () {
     }
   }
 
+  this.furthestPlayerPos = 0
+  this.levelStarted = false
+  this.reachedLevelEnd = false
   this.gameWinned = false
   this.gameOver = false
 
@@ -137,17 +134,8 @@ function create () {
 
   initSounds(this)
 
-  createAnimations(this) // Crear las animaciones de Mario.
-
-  this.mario = this.physics.add
-    .sprite(startOffset, screenHeight - platformHeight, 'mario')
-    .setOrigin(1)
-    .setBounce(0)
-    .setCollideWorldBounds(true) // Evitar que Mario salga de los límites del mundo del juego.
-    .setScale(screenHeight / 376)
-  this.mario.depth = 3
-  // this.mario.state = 1
-
+  createAnimations.call(this) // Crear las animaciones de Mario.
+  createPlayer.call(this)
   generateLevel.call(this)
   drawWorld.call(this)
   drawStartScreen.call(this)
@@ -206,7 +194,7 @@ function collectItem (mario, item) {
 
     mario.setTint(0xfefefe).anims.play('mario-grown-idle')
     let i = 0
-    let interval = setInterval(() => {
+    const interval = setInterval(() => {
       i++
       mario.anims.play(i % 2 === 0
         ? 'mario-grown-idle'
@@ -280,40 +268,59 @@ function onHitEnemy (mario, enemy) {
 }
 
 function update (delta) {
-  const { mario } = this // Desestructurar el objeto this para obtener la referencia a Mario.
+  const { mario, cameras, physics } = this
+  let { levelStarted, reachedLevelEnd, furthestPlayerPos } = this
   // const cam = this.cameras.main
 
-  checkControls(this, delta)
+  checkControls.call(this, delta)
+  // console.log(this.levelStarted)
+  const playerVelocityX = mario.body.velocity.x
+  const camera = cameras.main
 
-  // const playerVelocityX = mario.body.velocity.x
+  if (playerVelocityX > 0 && levelStarted && !reachedLevelEnd && !camera.isFollowing &&
+        mario.x >= screenWidth * 1.5 && mario.x >= (camera.worldView.x + camera.width / 2)) {
+    camera.startFollow(mario, true, 0.1, 0.05)
+    camera.isFollowing = true
+  }
 
-  if (mario.y >= config.height) {
-    killMario(this)
+  if (playerVelocityX < 0 && furthestPlayerPos < mario.x && levelStarted && !reachedLevelEnd && camera.isFollowing) {
+    furthestPlayerPos = mario.x
+    physics.world.setBounds(camera.worldView.x, 0, worldWidth, screenHeight)
+    camera.setBounds(camera.worldView.x, 0, worldWidth, screenHeight)
+    camera.stopFollow()
+    camera.isFollowing = false
   }
 }
 
-function killMario (game) {
-  const { mario, scene } = game
+export function killMario () {
+  const { mario } = this
 
   if (mario.isDead) return // Si Mario ya está muerto, no hacer nada.
 
   mario.isDead = true
-  mario.anims.play('mario-dead')
-  mario.setCollideWorldBounds(false) // Permitir que Mario salga de los límites del mundo del juego.
+  mario.anims.play('mario-dead', true)
+  mario.body.enable = false
+  this.finalFlagMast.body.enable = false
+  console.log(mario)
+  // mario.setCollideWorldBounds(false) // Permitir que Mario salga de los límites del mundo del juego.
 
-  game.gameOverSong.play()
-
-  mario.body.checkCollision.none = true // Desactivar la colisión de Mario con el mundo.
+  // mario.body.checkCollision.none = true // Desactivar la colisión de Mario con el mundo.
+  mario.body.setSize(16, 16).setOffset(0)
   mario.setVelocityX(0)
-
   setTimeout(() => {
-    mario.setVelocityY(-250)
-  }, 100)
+    mario.body.enable = true
+    mario.setVelocityY(-velocityY * 1.1)
+  }, 500)
 
+  this.musicTheme.stop()
+  this.gameOverSong.play()
   // this.physics.world.pause()
   // this.anims.pauseAll()
 
   setTimeout(() => {
-    scene.restart() // Reiniciar la escena después de un tiempo.
-  }, 2000)
+    // scene.restart() // Reiniciar la escena después de un tiempo.
+    mario.depth = 0
+    // gameOverScreen.call(this, timeLeft <= 0)
+    this.physics.pause()
+  }, 3000)
 }

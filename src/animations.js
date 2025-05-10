@@ -1,12 +1,13 @@
-export const createAnimations = (game) => {
-  game.anims.create({
+export function createAnimations () {
+  const { anims } = this
+  anims.create({
     key: 'mario-idle',
     frames: [{ key: 'mario', frame: 0 }],
   })
 
-  game.anims.create({
+  anims.create({
     key: 'mario-walk',
-    frames: game.anims.generateFrameNumbers(
+    frames: anims.generateFrameNumbers(
       'mario',
       { start: 1, end: 3 } // Generar fotogramas de la animación desde el sprite Mario.
     ),
@@ -14,24 +15,24 @@ export const createAnimations = (game) => {
     repeat: -1, // Repetir la animación indefinidamente.
   })
 
-  game.anims.create({
+  anims.create({
     key: 'mario-dead',
     frames: [{ key: 'mario', frame: 4 }],
   })
 
-  game.anims.create({
+  anims.create({
     key: 'mario-jump',
     frames: [{ key: 'mario', frame: 5 }],
   })
 
-  game.anims.create({
+  anims.create({
     key: 'mario-grown-idle',
     frames: [{ key: 'mario-grown', frame: 0 }],
   })
 
-  game.anims.create({
+  anims.create({
     key: 'mario-grown-walk',
-    frames: game.anims.generateFrameNumbers(
+    frames: anims.generateFrameNumbers(
       'mario-grown',
       { start: 1, end: 3 } // Generar fotogramas de la animación desde el sprite Mario.
     ),
@@ -39,24 +40,24 @@ export const createAnimations = (game) => {
     repeat: -1, // Repetir la animación indefinidamente.
   })
 
-  game.anims.create({
+  anims.create({
     key: 'mario-grown-crouch',
     frames: [{ key: 'mario-grown', frame: 4 }],
   })
 
-  game.anims.create({
+  anims.create({
     key: 'mario-grown-jump',
     frames: [{ key: 'mario-grown', frame: 5 }],
   })
 
-  game.anims.create({
+  anims.create({
     key: 'mario-fire-idle',
     frames: [{ key: 'mario-fire', frame: 0 }],
   })
 
-  game.anims.create({
+  anims.create({
     key: 'mario-fire-walk',
-    frames: game.anims.generateFrameNumbers(
+    frames: anims.generateFrameNumbers(
       'mario-fire',
       { start: 1, end: 3 } // Generar fotogramas de la animación desde el sprite Mario.
     ),
@@ -64,24 +65,24 @@ export const createAnimations = (game) => {
     repeat: -1,
   })
 
-  game.anims.create({
+  anims.create({
     key: 'mario-fire-crouch',
     frames: [{ key: 'mario-fire', frame: 4 }],
   })
 
-  game.anims.create({
+  anims.create({
     key: 'mario-fire-jump',
     frames: [{ key: 'mario-fire', frame: 5 }],
   })
 
-  game.anims.create({
+  anims.create({
     key: 'mario-fire-throw',
     frames: [{ key: 'mario-fire', frame: 6 }],
   })
 
-  game.anims.create({
+  anims.create({
     key: 'goomba-walk',
-    frames: game.anims.generateFrameNumbers(
+    frames: anims.generateFrameNumbers(
       'goomba',
       { start: 0, end: 1 } // Generar fotogramas de la animación desde el sprite Goomba.
     ),
@@ -89,14 +90,14 @@ export const createAnimations = (game) => {
     repeat: -1, // Repetir la animación indefinidamente.
   })
 
-  game.anims.create({
+  anims.create({
     key: 'goomba-hurt',
     frames: [{ key: 'goomba', frame: 2 }]
   })
 
-  game.anims.create({
+  anims.create({
     key: 'coin-idle',
-    frames: game.anims.generateFrameNumbers(
+    frames: anims.generateFrameNumbers(
       'coin',
       { start: 0, end: 3 }
     ),
@@ -105,49 +106,49 @@ export const createAnimations = (game) => {
   })
 
   // > Ground coin
-  game.anims.create({
+  anims.create({
     key: 'ground-coin-default',
-    frames: game.anims.generateFrameNumbers('ground-coin', { start: 2, end: 0 }),
+    frames: anims.generateFrameNumbers('ground-coin', { start: 2, end: 0 }),
     frameRate: 5,
     repeat: -1,
     repeatDelay: 5
   })
 
   // > Mistery blocks
-  game.anims.create({
+  anims.create({
     key: 'mistery-block-default',
-    frames: game.anims.generateFrameNumbers('mistery-block', { start: 2, end: 0 }),
+    frames: anims.generateFrameNumbers('mistery-block', { start: 2, end: 0 }),
     frameRate: 5,
     repeat: -1,
     repeatDelay: 5
   })
 
-  game.anims.create({
+  anims.create({
     key: 'custom-block-default',
-    frames: game.anims.generateFrameNumbers('custom-block', { start: 2, end: 0 }),
+    frames: anims.generateFrameNumbers('custom-block', { start: 2, end: 0 }),
     frameRate: 5,
     repeat: -1,
     repeatDelay: 5
   })
 
   // > Brick debris
-  game.anims.create({
+  anims.create({
     key: 'brick-debris-default',
-    frames: game.anims.generateFrameNumbers('brick-debris', { start: 0, end: 3 }),
+    frames: anims.generateFrameNumbers('brick-debris', { start: 0, end: 3 }),
     frameRate: 4,
     repeat: -1,
   })
 
   // > NPC
-  game.anims.create({
+  anims.create({
     key: 'npc-default',
-    frames: game.anims.generateFrameNumbers('npc', { start: 0, end: 1 }),
+    frames: anims.generateFrameNumbers('npc', { start: 0, end: 1 }),
     frameRate: 2,
     repeat: -1,
     repeatDelay: 10
   })
 
-  game.anims.create({
+  anims.create({
     key: 'supermushroom-idle',
     frames: [{ key: 'supermushroom', frame: 0 }]
   })
