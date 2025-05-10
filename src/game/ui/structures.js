@@ -1,7 +1,8 @@
 /* global Phaser */
-import { isLevelOverworld, platformHeight, screenHeight } from '../services/config.js'
+import { playerOptions, platformHeight, screenHeight } from '../services/config.js'
 
 export function generateStructure (pieceStart) {
+  const { isLevelOverworld } = playerOptions
   const random = Phaser.Math.Between(0, 5)
   // > Generate random structure an add it to their blocksGroup
 

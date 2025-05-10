@@ -1,19 +1,20 @@
 /* global Phaser */
 import { applyPlayerInvulnerability } from '../../player-controls.js'
-import { isLevelOverworld, platformHeight, platformPiecesWidth, platformPieces, screenHeight, screenWidth, worldWidth, worldHolesCoords } from '../services/config.js'
+import { playerOptions, platformHeight, platformPiecesWidth, platformPieces, screenHeight, screenWidth, worldWidth, worldHolesCoords } from '../services/config.js'
 import { MARIO_ANIMATIONS } from '../services/mario_animations.js'
 import { destroyBlock, revealHiddenBlock } from './blocks.js'
 import { generateStructure } from './structures.js'
 
 export function generateLevel () {
-  // > Creating the platform
+  const { isLevelOverworld } = playerOptions
+  // > Creando la plataforma
   const player = this.mario
 
-  // pieceStart will be the next platform piece start pos. This value will be modified after each execution
+  // pieceStart será la siguiente posición de inicio de la pieza de la plataforma. Este valor se modificará después de cada ejecución.
   let pieceStart = screenWidth
-  // This will tell us if last generated piece of platform was empty, to avoid generating another empty piece next to it.
+  // Esto nos dirá si la última pieza de plataforma generada estaba vacía, para evitar generar otra pieza vacía a su lado.
   let lastWasHole = 0
-  // Structures will generate every 2/3 platform pieces
+  // Las estructuras generarán cada 2/3 piezas de plataforma
   let lastWasStructure = 0
 
   this.platformGroup = this.add.group()
@@ -32,14 +33,19 @@ export function generateLevel () {
   }
 
   for (let i = 0; i <= platformPieces; i++) {
-    // Holes will have a 10% chance of spawning
+    // Los agujeros tendrán un 10% de posibilidades de aparecer.
     const number = Phaser.Math.Between(0, 100)
 
-    // Check if its not a hole, this means is not that 20%, is not in the spawn safe area and is not close to the end castle.
+    // Comprueba que no sea un agujero, esto significa que no es ese 20%, no está en la zona segura de aparición y no está cerca del castillo final.
+    // Verifica si no se debe generar una nueva pieza de plataforma, evaluando:
+    // - Si el inicio de la pieza está demasiado cerca del borde derecho del mundo,
+    //   o si recientemente se generó un agujero o una estructura,
+    // - O si no quedan piezas por colocar,
+    // - O si la posición de inicio está muy cerca de los bordes izquierdo o derecho de la pantalla visible
     if (pieceStart >= (lastWasHole > 0 || lastWasStructure > 0 || worldWidth - platformPiecesWidth * 4) || number <= 0 || pieceStart <= screenWidth * 2 || pieceStart >= worldWidth - screenWidth * 2) {
       lastWasHole--
 
-      // > Create platform
+      // > Crear plataforma
       const Npiece = this.add.tileSprite(pieceStart, screenHeight, platformPiecesWidth, platformHeight, 'floorbricks')
         .setScale(2)
         .setOrigin(0, 0.5)
@@ -49,10 +55,10 @@ export function generateLevel () {
       Npiece.isPlatform = true
       Npiece.depth = 2
       this.platformGroup.add(Npiece)
-      // Apply player collision with platform
+      // Aplicar colisión del jugador con la plataforma
       this.physics.add.collider(player, Npiece)
 
-      // > Creating world structures
+      // > Creando estructuras del mundo
 
       if (!(pieceStart >= (worldWidth - screenWidth * (isLevelOverworld ? 1 : 1.5))) && pieceStart > (screenWidth + platformPiecesWidth * 2) && lastWasHole < 1 && lastWasStructure < 1) {
         lastWasStructure = generateStructure.call(this, pieceStart)
@@ -60,7 +66,7 @@ export function generateLevel () {
         lastWasStructure--
       }
     } else {
-      // Save every hole start and end for later use
+      // Guarda el inicio y el final de cada hoyo para usarlo más tarde.
       worldHolesCoords.push({
         start: pieceStart,
         end: pieceStart + platformPiecesWidth * 2
@@ -85,13 +91,11 @@ export function generateLevel () {
   this.physics.add.collider(player, this.startScreenTrigger, startLevel, null, this)
 
   const invisibleWall2 = this.add.rectangle(screenWidth, screenHeight - platformHeight, 1, screenHeight).setOrigin(0.5, 1)
-  // let invisibleWall2 = this.add.rectangle(screenWidth - 10, screenHeight - platformHeight, 10, screenHeight, 0x000000, 0.9).setOrigin(0.5, 1)
   this.physics.add.existing(invisibleWall2)
   invisibleWall2.body.allowGravity = false
   invisibleWall2.body.immovable = true
   this.physics.add.collider(this.mario, invisibleWall2)
   this.fallProtectionGroup.add(invisibleWall2)
-  // console.log(invisibleWall2)
 
   if (!isLevelOverworld) {
     this.verticalTube = this.add.tileSprite(worldWidth - screenWidth, screenHeight - platformHeight, 32, screenHeight, 'vertical-extralarge-tube').setScale(screenHeight / 345).setOrigin(1, 1)
@@ -123,7 +127,7 @@ export function generateLevel () {
     fallProtections[i].body.immovable = true
   }
 
-  // Stablish properties for every generated structure
+  // Establecer propiedades para cada estructura generada
   const misteryBlocks = this.misteryBlocksGroup.getChildren()
   for (let i = 0; i < misteryBlocks.length; i++) {
     this.physics.add.existing(misteryBlocks[i])
@@ -134,7 +138,7 @@ export function generateLevel () {
     this.physics.add.collider(player, misteryBlocks[i], revealHiddenBlock, null, this)
   }
 
-  // Apply player collision with blocks
+  // Aplicar colisión de jugadores con bloques
   const blocks = this.blocksGroup.getChildren()
   for (let i = 0; i < blocks.length; i++) {
     this.physics.add.existing(blocks[i])
@@ -144,7 +148,9 @@ export function generateLevel () {
     this.physics.add.collider(player, blocks[i], destroyBlock, null, this)
   }
 
-  // Apply player collision with immovable blocks
+  // Aplicar físicas a cada bloque del grupo de construcción
+  // - Se les desactiva la gravedad y se marcan como inmóviles
+  // - Se establece una colisión con el jugador que llama a la función destroyBlock
   const constructionBlocks = this.constructionBlocksGroup.getChildren()
   for (let i = 0; i < constructionBlocks.length; i++) {
     this.physics.add.existing(constructionBlocks[i])
@@ -155,7 +161,9 @@ export function generateLevel () {
     this.physics.add.collider(player, constructionBlocks[i], destroyBlock, null, this)
   }
 
-  // Apply player collision with immovable blocks
+  // Configurar bloques inmóviles del grupo:
+  // - Se desactiva la gravedad y se marcan como inmóviles
+  // - Se establece colisión con el jugador, sin función adicional
   const immovableBlocks = this.immovableBlocksGroup.getChildren()
   for (let i = 0; i < immovableBlocks.length; i++) {
     this.physics.add.existing(immovableBlocks[i])
@@ -165,6 +173,10 @@ export function generateLevel () {
     this.physics.add.collider(player, immovableBlocks[i])
   }
 
+  // Configurar monedas en el suelo:
+  // - Se activa la animación por defecto de la moneda
+  // - Se desactiva la gravedad y se hacen inmóviles
+  // - Se detecta superposición con el jugador para ejecutar collectCoin
   const groundCoins = this.groundCoinsGroup.getChildren()
   for (let i = 0; i < groundCoins.length; i++) {
     this.physics.add.existing(groundCoins[i])
@@ -198,10 +210,12 @@ function startLevel (player, trigger) {
   this.hereWeGoSound.play()
 
   setTimeout(() => {
-    if (!isLevelOverworld) {
+    if (!playerOptions.isLevelOverworld) {
       player.y = screenHeight / 5
       this.musicTheme.stop()
       this.undergroundMusicTheme.play({ loop: -1 })
+    } else {
+      this.musicTheme.play({ loop: -1 })
     }
 
     player.x = screenWidth * 1.1
@@ -212,7 +226,6 @@ function startLevel (player, trigger) {
     // updateTimer.call(this);
     this.startScreenTrigger.destroy()
     this.levelStarted = true
-    this.musicTheme.play({ loop: -1 })
     // if (this.settingsMenuOpen)hideSettings.call(this);
   }, 1100)
 }

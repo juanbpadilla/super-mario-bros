@@ -9,6 +9,7 @@ import { generateLevel } from './game/ui/generateLevel.js'
 import { initImages, initSpriteSheet } from './spritesheet.js'
 import { createControls } from './game/services/controls.js'
 import { drawWorld } from './game/ui/drawWorld.js'
+import { createEnemies } from './game/ui/enemies-control.js'
 
 const loadingGif = document.querySelectorAll('.loading-gif')
 
@@ -67,6 +68,7 @@ const SmoothedHorionztalControl = new Phaser.Class({
 })
 
 function preload () {
+  // let { isLevelOverworld, levelStyle } = playerOptions
   const progressBox = this.add.graphics()
   const progressBar = this.add.graphics()
   progressBox.fillStyle(0x222222, 1)
@@ -102,6 +104,11 @@ function preload () {
   // Load Fonts
   this.load.bitmapFont('carrier_command', 'assets/fonts/carrier_command.png', 'assets/fonts/carrier_command.xml')
 
+  // isLevelOverworld = Phaser.Math.Between(0, 100) <= 84
+  playerOptions.setLevel(Phaser.Math.Between(0, 100) <= 84)
+  // levelStyle = isLevelOverworld ? 'overworld' : 'underground'
+  playerOptions.setLevelStyle()
+
   initImages(this)
   initSpriteSheet(this)
   initAudio(this)
@@ -121,6 +128,9 @@ function create () {
     }
   }
 
+  this.flagRaised = false
+  this.playerFiring = false
+  this.fireInCooldown = false
   this.furthestPlayerPos = 0
   this.levelStarted = false
   this.reachedLevelEnd = false
@@ -139,12 +149,13 @@ function create () {
   generateLevel.call(this)
   drawWorld.call(this)
   drawStartScreen.call(this)
+  createEnemies.call(this)
 
-  this.enemy = this.physics.add
-    .sprite(120, config.height - 30, 'goomba')
-    .setOrigin(0, 1)
-    .setGravityY(300)
-    .setVelocityX(-50)
+  // this.enemy = this.physics.add
+  //   .sprite(120, config.height - 30, 'goomba')
+  //   .setOrigin(0, 1)
+  //   .setGravityY(300)
+  //   .setVelocityX(-50)
 
   this.collectibes = this.physics.add.staticGroup()
   this.collectibes.create(150, 150, 'coin').anims.play('coin-idle', true)
@@ -156,7 +167,7 @@ function create () {
 
   // this.physics.add.collider(this.mario, this.floor) // Agregar colisión entre Mario y el suelo.
   // this.physics.add.collider(this.enemy, this.floor)
-  this.physics.add.collider(this.mario, this.enemy, onHitEnemy, null, this)
+  // this.physics.add.collider(this.mario, this.enemy, onHitEnemy, null, this)
   // this.cameras.main.startFollow(this.mario) // Hacer que la cámara siga a Mario.
   // this.enemy.anims.play('goomba-walk', true)
   createControls.call(this)
@@ -174,6 +185,7 @@ function create () {
     align: 'center',
   }).setOrigin(0.5, 0.5).setVisible(this.isPaused) // Crear el menú de pausa y ocultarlo inicialmente.
   this.pauseMenu.depth = 5
+  console.log(playerOptions.levelStyle)
 
   this.smoothedControls = new SmoothedHorionztalControl(0.001)
 }
@@ -222,21 +234,27 @@ function collectItem (mario, item) {
   }
 }
 
-function addToScore (scoreAdd, origin, game) {
+export function addToScore (scoreAdd, origin, game) {
+  if (!origin) return
+
   const scoreText = game.add.text(
-    origin.x,
-    origin.y,
+    origin.getBounds().x,
+    origin.getBounds().y,
     scoreAdd,
     {
       fontFamily: 'pixel',
-      fontSize: config.width / 40
+      fontSize: (screenWidth / 150),
+      align: 'center'
     }
   )
 
+  scoreText.setOrigin(0).smoothed = true
+  scoreText.depth = 5
+
   game.tweens.add({
     targets: scoreText,
-    duration: 500,
-    y: scoreText.y - 20,
+    duration: 600,
+    y: scoreText.y - screenHeight / 6.5,
     onComplete: () => {
       game.tweens.add({
         targets: scoreText,
@@ -248,23 +266,6 @@ function addToScore (scoreAdd, origin, game) {
       })
     }
   })
-}
-
-function onHitEnemy (mario, enemy) {
-  if (mario.body.touching.down && enemy.body.touching.up) {
-    enemy.anims.play('goomba-hurt', true)
-    enemy.setVelocityX(0)
-    mario.setVelocityY(-200)
-
-    this.goombaStompSound.play()
-    addToScore(200, enemy, this)
-
-    setTimeout(() => {
-      enemy.destroy()
-    }, 500)
-  } else {
-    killMario(this)
-  }
 }
 
 function update (delta) {
@@ -302,9 +303,15 @@ export function killMario () {
   mario.body.enable = false
   this.finalFlagMast.body.enable = false
   console.log(mario)
-  // mario.setCollideWorldBounds(false) // Permitir que Mario salga de los límites del mundo del juego.
+  mario.setCollideWorldBounds(false) // Permitir que Mario salga de los límites del mundo del juego.
 
-  // mario.body.checkCollision.none = true // Desactivar la colisión de Mario con el mundo.
+  const goombas = this.goombasGroup.getChildren()
+  goombas.forEach(item => {
+    item.anims.stop()
+    item.body.enable = false
+  })
+
+  mario.body.checkCollision.none = true // Desactivar la colisión de Mario con el mundo.
   mario.body.setSize(16, 16).setOffset(0)
   mario.setVelocityX(0)
   setTimeout(() => {
@@ -313,6 +320,8 @@ export function killMario () {
   }, 500)
 
   this.musicTheme.stop()
+  this.undergroundMusicTheme.stop()
+  this.hurryMusicTheme.stop()
   this.gameOverSong.play()
   // this.physics.world.pause()
   // this.anims.pauseAll()

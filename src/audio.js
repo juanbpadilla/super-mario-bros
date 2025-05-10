@@ -1,86 +1,87 @@
-import { levelStyle } from './game/services/config.js'
+import { playerOptions } from './game/services/config.js'
 
 /* global Phaser */
-const INIT_AUDIOS = [
-  {
-    key: 'music',
-    path: 'assets/sound/music/overworld/theme.mp3',
-  },
-  {
-    key: 'underground-music',
-    path: 'assets/sound/music/underground/theme.mp3',
-  },
-  {
-    key: 'hurry-up-music',
-    path: 'assets/sound/music/' + levelStyle + '/hurry-up-theme.mp3',
-  },
-  {
-    key: 'gameover',
-    path: 'assets/sound/music/gameover.mp3',
-  },
-  {
-    key: 'win',
-    path: 'assets/sound/music/win.wav',
-  },
-  {
-    key: 'coin-pickup',
-    path: 'assets/sound/effects/coin.mp3',
-  },
-  {
-    key: 'powerup-appears',
-    path: 'assets/sound/effects/powerup-appears.mp3'
-  },
-  {
-    key: 'powerup',
-    path: 'assets/sound/effects/consume-powerup.mp3'
-  },
-  {
-    key: 'powerdown',
-    path: 'assets/sound/effects/powerdown.mp3'
-  },
-  {
-    key: 'goomba-stomp',
-    path: 'assets/sound/effects/goomba-stomp.wav',
-  },
-  {
-    key: 'flagpole',
-    path: 'assets/sound/effects/flagpole.mp3'
-  },
-  {
-    key: 'fireball',
-    path: 'assets/sound/effects/fireball.mp3'
-  },
-  {
-    key: 'kick',
-    path: 'assets/sound/effects/kick.mp3'
-  },
-  {
-    key: 'time-warning',
-    path: 'assets/sound/effects/time-warning.mp3'
-  },
-  {
-    key: 'here-we-go',
-    path: Phaser.Math.Between(0, 100) < 98 ? 'assets/sound/effects/here-we-go.mp3' : 'assets/sound/effects/cursed-here-we-go.mp3'
-  },
-  {
-    key: 'pause',
-    path: 'assets/sound/effects/pause.wav'
-  },
-  {
-    key: 'jumpsound',
-    path: 'assets/sound/effects/jump.mp3'
-  },
-  {
-    key: 'block-bump',
-    path: 'assets/sound/effects/block-bump.wav'
-  },
-  {
-    key: 'break-block',
-    path: 'assets/sound/effects/break-block.wav'
-  },
-]
 
 export const initAudio = ({ load }) => {
+  const { levelStyle } = playerOptions
+  const INIT_AUDIOS = [
+    {
+      key: 'music',
+      path: 'assets/sound/music/overworld/theme.mp3',
+    },
+    {
+      key: 'underground-music',
+      path: 'assets/sound/music/underground/theme.mp3',
+    },
+    {
+      key: 'hurry-up-music',
+      path: 'assets/sound/music/' + levelStyle + '/hurry-up-theme.mp3',
+    },
+    {
+      key: 'gameover',
+      path: 'assets/sound/music/gameover.mp3',
+    },
+    {
+      key: 'win',
+      path: 'assets/sound/music/win.wav',
+    },
+    {
+      key: 'coin-pickup',
+      path: 'assets/sound/effects/coin.mp3',
+    },
+    {
+      key: 'powerup-appears',
+      path: 'assets/sound/effects/powerup-appears.mp3'
+    },
+    {
+      key: 'powerup',
+      path: 'assets/sound/effects/consume-powerup.mp3'
+    },
+    {
+      key: 'powerdown',
+      path: 'assets/sound/effects/powerdown.mp3'
+    },
+    {
+      key: 'goomba-stomp',
+      path: 'assets/sound/effects/goomba-stomp.wav',
+    },
+    {
+      key: 'flagpole',
+      path: 'assets/sound/effects/flagpole.mp3'
+    },
+    {
+      key: 'fireball',
+      path: 'assets/sound/effects/fireball.mp3'
+    },
+    {
+      key: 'kick',
+      path: 'assets/sound/effects/kick.mp3'
+    },
+    {
+      key: 'time-warning',
+      path: 'assets/sound/effects/time-warning.mp3'
+    },
+    {
+      key: 'here-we-go',
+      path: Phaser.Math.Between(0, 100) < 98 ? 'assets/sound/effects/here-we-go.mp3' : 'assets/sound/effects/cursed-here-we-go.mp3'
+    },
+    {
+      key: 'pause',
+      path: 'assets/sound/effects/pause.wav'
+    },
+    {
+      key: 'jumpsound',
+      path: 'assets/sound/effects/jump.mp3'
+    },
+    {
+      key: 'block-bump',
+      path: 'assets/sound/effects/block-bump.wav'
+    },
+    {
+      key: 'break-block',
+      path: 'assets/sound/effects/break-block.wav'
+    },
+  ]
   INIT_AUDIOS.forEach(({ key, path }) => {
     load.audio(key, path)
   })
@@ -102,16 +103,16 @@ export const initSounds = (game) => {
   // game.musicTheme.play({ loop: -1 })
   game.musicGroup.add(game.musicTheme)
 
-  game.undergroundMusicTheme = game.sound.add('underground-music', { volume: 0.15 })
+  game.undergroundMusicTheme = game.sound.add('underground-music', { volume: 0.2 })
   game.musicGroup.add(game.undergroundMusicTheme)
 
   game.hurryMusicTheme = game.sound.add('hurry-up-music', { volume: 0.15 })
   game.musicGroup.add(game.hurryMusicTheme)
 
-  game.gameOverSong = game.sound.add('gameover', { volume: 0.3 })
+  game.gameOverSong = game.sound.add('gameover', { volume: 0.2 })
   game.musicGroup.add(game.gameOverSong)
 
-  game.winSound = game.sound.add('win', { volume: 0.3 })
+  game.winSound = game.sound.add('win', { volume: 0.2 })
   game.musicGroup.add(game.winSound)
 
   game.jumpSound = game.sound.add('jumpsound', { volume: 0.10 })

@@ -1,6 +1,5 @@
 /* global Phaser */
 import {
-  isLevelOverworld,
   platformHeight,
   playerOptions,
   screenHeight,
@@ -10,6 +9,7 @@ import {
 import { generateRandomCoordinate } from '../services/randomCoordinate.js'
 
 export function drawWorld () {
+  const { isLevelOverworld } = playerOptions
   // Drawing scenery props
   const player = this.mario
 
