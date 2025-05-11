@@ -1,8 +1,8 @@
 /* global Phaser */
 
-import { killMario } from './game.js'
-import { controlKeys, platformHeight, playerOptions, screenHeight, screenWidth, startOffset, velocityY, worldWidth } from './game/services/config.js'
-import { MARIO_ANIMATIONS } from './game/services/mario_animations.js'
+import { killMario } from '../../game.js'
+import { controlKeys, platformHeight, playerOptions, screenHeight, screenWidth, startOffset, velocityY, worldWidth } from '../services/config.js'
+import { MARIO_ANIMATIONS } from '../services/mario_animations.js'
 
 export function createPlayer () {
   this.mario = this.physics.add

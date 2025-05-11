@@ -1,5 +1,5 @@
 /* global Phaser */
-import { applyPlayerInvulnerability } from '../../player-controls.js'
+import { applyPlayerInvulnerability } from '../player/playerController.js'
 import { playerOptions, platformHeight, platformPiecesWidth, platformPieces, screenHeight, screenWidth, worldWidth, worldHolesCoords } from '../services/config.js'
 import { MARIO_ANIMATIONS } from '../services/mario_animations.js'
 import { destroyBlock, revealHiddenBlock } from './blocks.js'

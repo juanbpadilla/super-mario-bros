@@ -2,7 +2,7 @@
 
 import { createAnimations } from './animations.js' // Importar la función createAnimations desde el archivo animations.js.
 import { initAudio, initSounds } from './audio.js'
-import { checkControls, createPlayer } from './player-controls.js'
+import { checkControls, createPlayer } from './game/player/playerController.js'
 import { drawStartScreen } from './game/ui/drawStartScreen.js'
 import { levelGravity, platformHeight, playerOptions, screenHeight, screenWidth, velocityX, velocityY, worldWidth } from './game/services/config.js'
 import { generateLevel } from './game/ui/generateLevel.js'
