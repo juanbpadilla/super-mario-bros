@@ -6,7 +6,7 @@ import { generateRandomCoordinate } from '../services/randomCoordinate.js'
 const goombasVelocityX = screenWidth / 19
 
 export function createEnemies () {
-  const { mario } = this
+  const mario = this.mario.sprite
   this.goombasGroup = this.add.group()
 
   for (let i = 0; i < Math.trunc(worldWidth / 960); i++) {
@@ -66,7 +66,7 @@ function onHitEnemy (mario, enemy) {
     this.goombasGroup.remove(enemy)
     this.goombaStompSound.play()
     enemy.setVelocityX(0)
-    addToScore(200, enemy, this)
+    addToScore.call(this, 200, enemy)
     mario.setVelocityY(-velocityY / 1.5)
 
     setTimeout(() => {

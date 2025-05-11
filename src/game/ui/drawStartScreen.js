@@ -1,7 +1,7 @@
 import { platformHeight, screenHeight, screenWidth } from '../services/config.js'
 
 export function drawStartScreen () {
-  const player = this.mario
+  const player = this.mario.sprite
   const screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2
 
   // Draw sky

@@ -1,5 +1,5 @@
 /* global Phaser */
-import { applyPlayerInvulnerability } from '../player/playerController.js'
+import { addToScore } from '../../game.js'
 import { playerOptions, platformHeight, platformPiecesWidth, platformPieces, screenHeight, screenWidth, worldWidth, worldHolesCoords } from '../services/config.js'
 import { MARIO_ANIMATIONS } from '../services/mario_animations.js'
 import { destroyBlock, revealHiddenBlock } from './blocks.js'
@@ -8,7 +8,7 @@ import { generateStructure } from './structures.js'
 export function generateLevel () {
   const { isLevelOverworld } = playerOptions
   // > Creando la plataforma
-  const player = this.mario
+  const player = this.mario.sprite
 
   // pieceStart será la siguiente posición de inicio de la pieza de la plataforma. Este valor se modificará después de cada ejecución.
   let pieceStart = screenWidth
@@ -197,7 +197,7 @@ function startLevel (player, trigger) {
 
   this.physics.world.setBounds(screenWidth, 0, worldWidth, screenHeight)
 
-  applyPlayerInvulnerability.call(this, 4000)
+  this.mario.invulnerability(4000)
 
   player.isBlocked = true
 
@@ -232,5 +232,9 @@ function startLevel (player, trigger) {
 
 // function revealHiddenBlock () { console.log('revealHiddenBlock') }
 // function destroyBlock () { console.log('destroyBlock') }
-function collectCoin () { console.log('collectCoin') }
+function collectCoin (player, coin) {
+  this.coinSound.play()
+  addToScore.call(this, 100)
+  coin.destroy()
+}
 function teleportToLevelEnd () { console.log('teleportToLevelEnd') }
