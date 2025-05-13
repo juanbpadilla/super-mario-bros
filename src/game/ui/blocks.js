@@ -1,4 +1,5 @@
 /* global Phaser */
+import { addToScore, collectItem } from '../../game.js'
 import { controlKeys, emptyBlocksList, screenHeight, screenWidth } from '../services/config.js'
 
 const mushroomsVelocityX = screenWidth / 15
@@ -31,7 +32,7 @@ export function revealHiddenBlock (player, block) {
 
   const random = Phaser.Math.Between(0, 100)
   if (random < 90) {
-    // addToScore.call(this, 200, block)
+    addToScore.call(this, 200, block)
     this.coinSound.play()
     const coin = this.physics.add.sprite(block.getBounds().x, block.getBounds().y, 'coin').setScale(screenHeight / 357)
       .setOrigin(0)
@@ -60,7 +61,7 @@ export function revealHiddenBlock (player, block) {
     })
   } else if (random >= 90 && random < 96) {
     this.powerUpAppearsSound.play()
-    const mushroom = this.physics.add.sprite(block.getBounds().x, block.getBounds().y, 'super-mushroom').setScale(screenHeight / 345).setOrigin(0).setBounce(1, 0)
+    const mushroom = this.physics.add.sprite(block.getBounds().x, block.getBounds().y, 'supermushroom').setScale(screenHeight / 345).setOrigin(0).setBounce(1, 0)
     this.tweens.add({
       targets: mushroom,
       duration: 300,
@@ -78,11 +79,12 @@ export function revealHiddenBlock (player, block) {
       onCompleteScope: this
     })
     // this.physics.add.overlap(player, mushroom, consumeMushroom, null, this)
-    // this.physics.add.collider(mushroom, this.misteryBlocksGroup.getChildren())
-    // this.physics.add.collider(mushroom, this.blocksGroup.getChildren())
-    // this.physics.add.collider(mushroom, this.platformGroup.getChildren())
-    // this.physics.add.collider(mushroom, this.immovableBlocksGroup.getChildren())
-    // this.physics.add.collider(mushroom, this.constructionBlocksGroup.getChildren())
+    this.physics.add.overlap(player, mushroom, collectItem, null, this)
+    this.physics.add.collider(mushroom, this.misteryBlocksGroup.getChildren())
+    this.physics.add.collider(mushroom, this.blocksGroup.getChildren())
+    this.physics.add.collider(mushroom, this.platformGroup.getChildren())
+    this.physics.add.collider(mushroom, this.immovableBlocksGroup.getChildren())
+    this.physics.add.collider(mushroom, this.constructionBlocksGroup.getChildren())
   } else {
     this.powerUpAppearsSound.play()
     const fireFlower = this.physics.add.sprite(block.getBounds().x, block.getBounds().y, 'fire-flower').setScale(screenHeight / 345).setOrigin(0)
@@ -96,6 +98,7 @@ export function revealHiddenBlock (player, block) {
       y: fireFlower.y - (screenHeight / 23)
     })
     // this.physics.add.overlap(player, fireFlower, consumeFireflower, null, this)
+    this.physics.add.overlap(player, fireFlower, collectItem, null, this)
     const misteryBlocks = this.misteryBlocksGroup.getChildren()
     this.physics.add.collider(fireFlower, misteryBlocks)
   }
@@ -132,7 +135,7 @@ export function destroyBlock (player, block) {
 }
 
 export function drawDestroyedBlockParticles (block) {
-  const player = this.mario
+  const player = this.mario.sprite
   const playerBounds = player.getBounds()
   const blockBounds = block.getBounds()
 

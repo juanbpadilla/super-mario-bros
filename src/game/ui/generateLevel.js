@@ -1,5 +1,5 @@
 /* global Phaser */
-import { addToScore } from '../../game.js'
+import { collectItem } from '../../game.js'
 import { playerOptions, platformHeight, platformPiecesWidth, platformPieces, screenHeight, screenWidth, worldWidth, worldHolesCoords } from '../services/config.js'
 import { MARIO_ANIMATIONS } from '../services/mario_animations.js'
 import { destroyBlock, revealHiddenBlock } from './blocks.js'
@@ -184,7 +184,8 @@ export function generateLevel () {
     groundCoins[i].body.allowGravity = false
     groundCoins[i].body.immovable = true
     groundCoins[i].depth = 2
-    this.physics.add.overlap(player, groundCoins[i], collectCoin, null, this)
+    // this.physics.add.overlap(player, groundCoins[i], collectCoin, null, this)
+    this.physics.add.overlap(player, groundCoins[i], collectItem, null, this)
   }
 }
 
@@ -230,11 +231,4 @@ function startLevel (player, trigger) {
   }, 1100)
 }
 
-// function revealHiddenBlock () { console.log('revealHiddenBlock') }
-// function destroyBlock () { console.log('destroyBlock') }
-function collectCoin (player, coin) {
-  this.coinSound.play()
-  addToScore.call(this, 100)
-  coin.destroy()
-}
 function teleportToLevelEnd () { console.log('teleportToLevelEnd') }

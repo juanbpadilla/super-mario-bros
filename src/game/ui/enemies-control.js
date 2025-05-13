@@ -1,4 +1,4 @@
-import { addToScore, killMario } from '../../game.js'
+import { addToScore } from '../../game.js'
 import { levelGravity, platformHeight, screenHeight, screenWidth, velocityY, worldWidth } from '../services/config.js'
 import { generateRandomCoordinate } from '../services/randomCoordinate.js'
 /* global Phaser */
@@ -84,7 +84,8 @@ function onHitEnemy (mario, enemy) {
     return
   }
 
-  killMario.call(this)
+  this.mario.decrease()
+  // killMario.call(this)
 }
 
 function clearEnemies () {

@@ -25,6 +25,50 @@ export default class PlayerController {
   invulnerability (time) {
     applyPlayerInvulnerabilityFun.call(this, time)
   }
+
+  decrease () {
+    decreasePlayer.call(this)
+  }
+}
+
+function decreasePlayer () {
+  const game = this.scene
+  const mario = this.sprite
+
+  if (mario.state <= 0) {
+    game.gameOver = true
+    killMario.call(game)
+    return
+  }
+
+  mario.isBlocked = true
+  game.physics.pause()
+  game.anims.pauseAll()
+  game.powerDownSound.play()
+
+  const anim1 = mario.state === 2 ? 'mario-fire-idle' : 'mario-grown-idle'
+  const anim2 = mario.state === 2 ? 'mario-grown-idle' : 'mario-idle'
+
+  this.invulnerability(3000)
+
+  mario.anims.play(anim2)
+
+  let i = 0
+  const interval = setInterval(() => {
+    i++
+    mario.anims.play(i % 2 === 0 ? anim2 : anim1)
+    if (i > 5) {
+      clearInterval(interval)
+    }
+  }, 100)
+
+  mario.state--
+
+  setTimeout(() => {
+    game.physics.resume()
+    game.anims.resumeAll()
+    mario.isBlocked = false
+  }, 1000)
 }
 
 function checkControls (delta) {

@@ -10,6 +10,7 @@ import { initImages, initSpriteSheet } from './spritesheet.js'
 import { createControls } from './game/services/controls.js'
 import { drawWorld } from './game/ui/drawWorld.js'
 import { createEnemies } from './game/ui/enemies-control.js'
+import { MARIO_ANIMATIONS } from './game/services/mario_animations.js'
 
 const loadingGif = document.querySelectorAll('.loading-gif')
 
@@ -171,49 +172,56 @@ function create () {
   this.smoothedControls = new SmoothedHorionztalControl(0.001)
 }
 
-// function collectItem (mario, item) {
-//   const { texture: { key } } = item
-//   item.destroy()
+export function collectItem (mario, item) {
+  const { texture: { key } } = item
+  console.log(key)
+  item.destroy()
 
-//   if (key === 'coin') {
-//     this.coinSound.play()
-//     addToScore(100, item, this)
-//   } else if (key === 'supermushroom') {
-//     this.consumePowerUpSound.play()
-//     mario.isBlocked = true
-//     this.anims.pauseAll()
-//     // this.physics.world.pause()
-//     this.physics.pause()
+  if (key === 'coin' || key === 'ground-coin') {
+    this.coinSound.play()
+    addToScore.call(this, 200)
+    return
+  } else if (key === 'supermushroom') {
+    this.consumePowerUpSound.play()
+    addToScore.call(this, 1000, key)
+    if (mario.state > 0) return
+  } else if (key === 'fire-flower') {
+    this.consumePowerUpSound.play()
+    addToScore.call(this, 1000, key)
+    if (mario.state > 1) return
+  } else {
+    return
+  }
+  const anim1 = MARIO_ANIMATIONS[mario.state + 1].idle
+  const anim2 = MARIO_ANIMATIONS[mario.state].idle
 
-//     mario.setTint(0xfefefe).anims.play('mario-grown-idle')
-//     let i = 0
-//     const interval = setInterval(() => {
-//       i++
-//       mario.anims.play(i % 2 === 0
-//         ? 'mario-grown-idle'
-//         : 'mario-idle'
-//       )
-//       if (i > 5) {
-//         clearInterval(interval)
-//         mario.clearTint()
-//       }
-//     }, 100)
+  mario.isBlocked = true
+  this.anims.pauseAll()
+  this.physics.pause()
 
-//     // mario.isGrown = true
+  mario.setTint(0xfefefe).anims.play(anim1)
+  let i = 0
+  const interval = setInterval(() => {
+    i++
+    mario.anims.play(i % 2 === 0
+      ? anim1
+      : anim2
+    )
+    if (i > 5) {
+      clearInterval(interval)
+      mario.clearTint()
+    }
+  }, 100)
 
-//     setTimeout(() => {
-//       // mario.setDisplaySize(18, 32)
-//       // mario.body.setSize(18, 32)
-//       // this.physics.world.resume()
-//       this.physics.resume()
-//       this.anims.resumeAll()
-//       mario.isBlocked = false
-//       mario.state = 1
-//       // clearInterval(interval)
-//     }, 1000)
-//     // console.log(mario)
-//   }
-// }
+  // mario.isGrown = true
+
+  setTimeout(() => {
+    this.physics.resume()
+    this.anims.resumeAll()
+    mario.isBlocked = false
+    mario.state++
+  }, 1000)
+}
 
 export function addToScore (scoreAdd, origin) {
   if (!origin) return
