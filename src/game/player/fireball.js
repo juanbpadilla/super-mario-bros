@@ -8,136 +8,124 @@ export function throwFireball () {
 
   game.fireballSound.play()
   player.anims.play(MARIO_ANIMATIONS[player.state].throw)
+
   game.playerFiring = true
   game.fireInCooldown = true
-  setTimeout(() => {
-    game.playerFiring = false
-  }, 100)
 
-  setTimeout(() => {
-    game.fireInCooldown = false
-  }, 350)
+  setTimeout(() => { game.playerFiring = false }, 100)
+  setTimeout(() => { game.fireInCooldown = false }, 350)
 
-  const fireball = game.physics.add.sprite(player.getBounds().x + (player.width * 1.15), player.getBounds().y + (player.height / 1.25), 'fireball').setScale(screenHeight / 345)
+  const x = player.getBounds().x + (player.width * 1.15)
+  const y = player.getBounds().y + (player.height * 1.25)
+
+  const fireball = game.physics.add.sprite(x, y, 'fireball').setScale(screenHeight / 376)
   fireball.allowGravity = true
   fireball.dead = false
-  if (playerOptions.playerController.direction.positive) {
-    fireball.setVelocityX(velocityX * 1.3)
-    fireball.isVelocityPositive = true
-    fireball.anims.play('fireball-right-down')
-  } else {
-    fireball.setVelocityX(-velocityX * 1.3)
-    fireball.isVelocityPositive = false
-    fireball.anims.play('fireball-left-down')
-  }
+  fireball.exploded = false
+
+  const isRight = playerOptions.playerController.direction.positive
+  fireball.setVelocityX((isRight ? 1 : -1) * velocityX * 1.3)
+  fireball.isVelocityPositive = isRight
+  fireball.anims.play(isRight ? 'fireball-right-down' : 'fireball-left-down')
 
   updateFireballAnimation.call(this, fireball)
-  game.physics.add.collider(fireball, game.blocksGroup.getChildren(), fireballBounce, null, this)
-  game.physics.add.collider(fireball, game.misteryBlocksGroup.getChildren(), fireballBounce, null, this)
-  game.physics.add.collider(fireball, game.platformGroup.getChildren(), fireballBounce, null, this)
-  game.physics.add.overlap(fireball, game.goombasGroup.getChildren(), fireballCollides, null, this)
-  game.physics.add.collider(fireball, game.immovableBlocksGroup.getChildren(), fireballBounce, null, this)
-  game.physics.add.collider(fireball, game.constructionBlocksGroup.getChildren(), fireballBounce, null, this)
+
+  const fireballBounceBound = fireballBounce.bind(this)
+  const fireballCollidesBound = fireballCollides.bind(this)
+
+  const colliderGroups = [
+    game.blocksGroup,
+    game.misteryBlocksGroup,
+    game.platformGroup,
+    game.immovableBlocksGroup,
+    game.constructionBlocksGroup
+  ]
+
+  colliderGroups.forEach(group => {
+    game.physics.add.collider(fireball, group.getChildren(), fireballBounceBound)
+  })
+
+  game.physics.add.overlap(fireball, game.goombasGroup.getChildren(), fireballCollidesBound)
 }
 
-function fireballCollides (fireball, entitie) {
-  const game = this.scene
-  if (fireball.exploded || fireball.dead) { return }
+function fireballCollides (fireball, entity) {
+  // const game = this.scene
+  const { scene: game } = this
+  if (fireball.exploded || fireball.dead) return
 
-  fireball.exploded = true
-  fireball.dead = true
+  fireball.exploded = fireball.dead = true
   fireball.body.moves = false
 
   explodeFireball.call(this, fireball)
 
   game.kickSound.play()
+  entity.anims.play('goomba-idle', true).flipY = true
+  entity.dead = true
+  game.goombasGroup.remove(entity)
 
-  entitie.anims.play('goomba-idle', true).flipY = true
-  entitie.dead = true
-  game.goombasGroup.remove(entitie)
-  entitie.setVelocityX(0)
-  entitie.setVelocityY(-velocityY * 0.4)
+  // entity.setVelocityX(0)
+  // entity.setVelocityY(-velocityY * 0.4)
+  entity.setVelocity(0, -velocityY * 0.4)
+
   setTimeout(() => {
     game.tweens.add({
-      targets: entitie,
+      targets: entity,
       duration: 750,
       y: screenHeight * 1.1
     })
   }, 400)
 
-  addToScore.call(game, 100, entitie)
-  setTimeout(() => {
-    entitie.destroy()
-  }, 1250)
+  addToScore.call(game, 100, entity)
+  setTimeout(() => { entity.destroy() }, 1250)
 }
 
 function explodeFireball (fireball) {
-  fireball.anims.play('fireball-explosion-1', true)
-
-  const destroyFireball = () => {
-    if (fireball) {
-      fireball.destroy()
-    }
-  }
+  const playExplosionFrame = (frame, delay) =>
+    new Promise(resolve => setTimeout(() => {
+      if (fireball) fireball.anims.play(frame, true)
+      resolve()
+    }, delay))
 
   Promise.resolve()
-    .then(() => new Promise(resolve => setTimeout(() => {
-      if (fireball) {
-        fireball.anims.play('fireball-explosion-2', true)
-      }
-      resolve()
-    }, 50)))
-    .then(() => new Promise(resolve => setTimeout(() => {
-      if (fireball) {
-        fireball.anims.play('fireball-explosion-3', true)
-      }
-      resolve()
-    }, 35)))
-    .then(() => new Promise(resolve => setTimeout(() => {
-      destroyFireball()
-      resolve()
-    }, 45)))
+    .then(() => playExplosionFrame('fireball-explosion-1', 0))
+    .then(() => playExplosionFrame('fireball-explosion-2', 50))
+    .then(() => playExplosionFrame('fireball-explosion-3', 35))
+    .then(() => setTimeout(() => fireball?.destroy(), 45))
 }
 
 function updateFireballAnimation (fireball) {
   if (fireball.exploded || fireball.dead) return
 
-  if (fireball.body.velocity.y > 0) {
-    if (fireball.isVelocityPositive) {
-      fireball.anims.play('fireball-right-up')
-    } else {
-      fireball.anims.play('fireball-left-up')
-    }
-  } else {
-    if (fireball.isVelocityPositive) {
-      fireball.anims.play('fireball-right-down')
-    } else {
-      fireball.anims.play('fireball-left-down')
-    }
-  }
+  const isFalling = fireball.body.velocity.y > 0
+  const anim = fireball.isVelocityPositive
+    ? isFalling ? 'fireball-right-up' : 'fireball-right-down'
+    : isFalling ? 'fireball-left-up' : 'fireball-left-down'
 
-  setTimeout(() => {
-    updateFireballAnimation.call(this, fireball)
-  }, 250)
+  fireball.anims.play(anim)
+
+  setTimeout(() => updateFireballAnimation.call(this, fireball), 250)
 }
 
 function fireballBounce (fireball, collider) {
-  const game = this.scene
-  if ((collider.isPlatform && (fireball.body.blocked.left || fireball.body.blocked.right)) || (!collider.isPlatform && (fireball.body.blocked.left || fireball.body.blocked.right))) {
-    fireball.exploded = true
-    fireball.dead = true
+  const { scene: game } = this
+
+  const hitSide = fireball.body.blocked.left || fireball.body.blocked.right
+  const hitTop = fireball.body.blocked.up
+  const hitBottom = fireball.body.blocked.down
+
+  if (hitSide) {
+    fireball.exploded = fireball.dead = true
     fireball.body.moves = false
 
     game.blockBumpSound.play()
-    explodeFireball.call(this, fireball)
-    return
+    return explodeFireball.call(this, fireball)
   }
+  // console.log('fireball.body.velocity.x:' + fireball.body.velocity.x)
+  // console.log('new velocity.x:' + velocityX * 1.4)
 
-  if (fireball.body.blocked.down) {
-    fireball.setVelocityY(-levelGravity / 3.45)
-  }
-
-  if (fireball.body.blocked.up) {
+  if (hitBottom) {
+    fireball.setVelocityY(-levelGravity / 4.5)
+  } else if (hitTop) {
     fireball.setVelocityY(levelGravity / 3.45)
   }
 

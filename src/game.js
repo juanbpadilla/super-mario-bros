@@ -26,7 +26,7 @@ const config = {
     default: 'arcade',
     arcade: {
       gravity: { y: levelGravity },
-      debug: true,
+      debug: false,
     },
   },
   scene: {
@@ -37,17 +37,16 @@ const config = {
 }
 
 // eslint-disable-next-line no-new
-new Phaser.Game(config) // Crear una nueva instancia del juego con la configuración especificada.
-//  this -> game -> el juego que estamos construyendo
+new Phaser.Game(config)
 
 const SmoothedHorionztalControl = new Phaser.Class({
 
   initialize:
 
-  function SmoothedHorionztalControl (speed) {
-    this.msSpeed = speed
-    this.value = 0
-  },
+    function SmoothedHorionztalControl (speed) {
+      this.msSpeed = speed
+      this.value = 0
+    },
 
   moveLeft: function (delta) {
     if (this.value > 0) { this.reset() }
@@ -69,7 +68,6 @@ const SmoothedHorionztalControl = new Phaser.Class({
 })
 
 function preload () {
-  // let { isLevelOverworld, levelStyle } = playerOptions
   const progressBox = this.add.graphics()
   const progressBar = this.add.graphics()
   progressBox.fillStyle(0x222222, 1)
@@ -105,9 +103,7 @@ function preload () {
   // Load Fonts
   this.load.bitmapFont('carrier_command', 'assets/fonts/carrier_command.png', 'assets/fonts/carrier_command.xml')
 
-  // isLevelOverworld = Phaser.Math.Between(0, 100) <= 84
   playerOptions.setLevel(Phaser.Math.Between(0, 100) <= 84)
-  // levelStyle = isLevelOverworld ? 'overworld' : 'underground'
   playerOptions.setLevelStyle()
 
   initImages(this)
@@ -214,8 +210,6 @@ export function collectItem (mario, item) {
     }
   }, 100)
 
-  // mario.isGrown = true
-
   setTimeout(() => {
     this.physics.resume()
     this.anims.resumeAll()
@@ -226,17 +220,11 @@ export function collectItem (mario, item) {
 
 export function addToScore (scoreAdd, origin) {
   if (!origin) return
-
-  const scoreText = this.add.text(
-    origin.getBounds().x,
-    origin.getBounds().y,
-    scoreAdd,
-    {
-      fontFamily: 'pixel',
-      fontSize: (screenWidth / 150),
-      align: 'center'
-    }
-  )
+  const scoreText = this.add.text(origin.getBounds().x, origin.getBounds().y, scoreAdd, {
+    fontFamily: 'pixel',
+    fontSize: (screenWidth / 150),
+    align: 'center'
+  })
 
   scoreText.setOrigin(0).smoothed = true
   scoreText.depth = 5
@@ -251,7 +239,7 @@ export function addToScore (scoreAdd, origin) {
         duration: 100,
         alpha: 0,
         onComplete: () => {
-          scoreText.destroy() // Destruir el texto de puntuación después de que se complete la animación.
+          scoreText.destroy()
         }
       })
     }
@@ -262,14 +250,14 @@ function update (delta) {
   const { cameras, physics } = this
   let { levelStarted, reachedLevelEnd, furthestPlayerPos } = this
   const mario = this.mario.sprite
+
   this.mario.update(delta)
 
-  // checkControls.call(this, delta)
   const playerVelocityX = mario.body.velocity.x
   const camera = cameras.main
 
   if (playerVelocityX > 0 && levelStarted && !reachedLevelEnd && !camera.isFollowing &&
-        mario.x >= screenWidth * 1.5 && mario.x >= (camera.worldView.x + camera.width / 2)) {
+    mario.x >= screenWidth * 1.5 && mario.x >= (camera.worldView.x + camera.width / 2)) {
     camera.startFollow(mario, true, 0.1, 0.05)
     camera.isFollowing = true
   }

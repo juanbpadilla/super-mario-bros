@@ -14,10 +14,12 @@ export default class PlayerController {
     this.sprite.setBounce(0)
       .setOrigin(1)
       .setCollideWorldBounds(true)
-      .setScale(screenHeight / 376)
+      .setScale(screenHeight / 345)
 
     this.sprite.depth = 3
     this.sprite.state = 2
+
+    console.log(this.sprite)
   }
 
   update (delta) {
@@ -84,31 +86,39 @@ function checkControls (delta) {
 
   const isLeftKeyDown = controlKeys.LEFT.isDown
   const isRightKeyDown = controlKeys.RIGHT.isDown
-  const isUpKeyDown = controlKeys.JUMP.isDown
+  // const isUpKeyDown = controlKeys.JUMP.isDown
+  const isUpKeyDown = Phaser.Input.Keyboard.JustDown(controlKeys.JUMP)
   const isDownKeyDown = controlKeys.DOWN.isDown
-  const isFireKeyDown = controlKeys.FIRE.isDown
+  // const isFireKeyDown = controlKeys.FIRE.isDown
+  const isFireKeyDown = Phaser.Input.Keyboard.JustDown(controlKeys.FIRE)
+  const isPauseKeyDown = Phaser.Input.Keyboard.JustDown(controlKeys.PAUSE)
 
   if (mario.isDead) return
 
   const marioAnimations = MARIO_ANIMATIONS[mario.state]
 
-  if (Phaser.Input.Keyboard.JustDown(controlKeys.PAUSE)) {
-    game.isPaused = !game.isPaused
-
-    game.pauseOverlay.setVisible(game.isPaused)
-    game.pauseMenu.setVisible(game.isPaused)
-
+  if (isPauseKeyDown) {
     const camera = game.cameras.main
+    const isPaused = !game.isPaused
+    game.isPaused = isPaused
+
+    game.pauseOverlay.setVisible(isPaused)
+    game.pauseMenu.setVisible(isPaused)
+
     // Pausar el juego si se presiona la tecla Escape.
-    if (game.isPaused) {
-      game.musicTheme.pause()
-      game.pauseSound.play()
+    if (isPaused) {
       game.pauseOverlay.setPosition(camera.scrollX, camera.scrollY)
       game.pauseMenu.setPosition(camera.scrollX + (camera.width / 2), game.pauseMenu.y)
+      game.pauseSound.play()
+    }
+
+    const musicTracks = [game.musicTheme, game.undergroundMusicTheme, game.hurryMusicTheme]
+    musicTracks.forEach(track => isPaused ? track.pause() : track.resume())
+
+    if (isPaused) {
       game.physics.world.pause()
       game.anims.pauseAll()
     } else {
-      game.musicTheme.resume()
       game.physics.world.resume()
       game.anims.resumeAll()
     }
@@ -215,16 +225,17 @@ function checkControls (delta) {
     }
   }
 
-  if (isMarioTouchingFloor && mario.state === 2 && isFireKeyDown && !fireInCooldown) {
+  // if (isMarioTouchingFloor && mario.state === 2 && isFireKeyDown && !fireInCooldown) {
+  if (mario.state === 2 && isFireKeyDown && !fireInCooldown) {
     throwFireball.call(this)
     return
   }
 
   // Apply jump animation
   if (!isMarioTouchingFloor) {
-    if (!playerFiring) {
-      mario.anims.play(marioAnimations.jump, true)
-    }
+    mario.anims.play(marioAnimations.jump, true)
+    // if (!playerFiring) {
+    // }
   }
 }
 

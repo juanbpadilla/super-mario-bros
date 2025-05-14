@@ -75,7 +75,8 @@ export const initAudio = ({ load }) => {
     },
     {
       key: 'block-bump',
-      path: 'assets/sound/effects/block-bump.wav'
+      // path: 'assets/sound/effects/block-bump.wav'
+      path: 'assets/sound/effects/firework.mp3'
     },
     {
       key: 'break-block',
