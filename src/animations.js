@@ -152,4 +152,36 @@ export function createAnimations () {
     key: 'supermushroom-idle',
     frames: [{ key: 'supermushroom', frame: 0 }]
   })
+
+  // > Fireball
+  anims.create({
+    key: 'fireball-left-down',
+    frames: [{ key: 'fireball', frame: 0 }]
+  })
+  anims.create({
+    key: 'fireball-left-up',
+    frames: [{ key: 'fireball', frame: 1 }]
+  })
+  anims.create({
+    key: 'fireball-right-down',
+    frames: [{ key: 'fireball', frame: 2 }]
+  })
+  anims.create({
+    key: 'fireball-right-up',
+    frames: [{ key: 'fireball', frame: 3 }]
+  })
+
+  // > Fireball explosion
+  anims.create({
+    key: 'fireball-explosion-1',
+    frames: [{ key: 'fireball-explosion', frame: 0 }]
+  })
+  anims.create({
+    key: 'fireball-explosion-2',
+    frames: [{ key: 'fireball-explosion', frame: 1 }]
+  })
+  anims.create({
+    key: 'fireball-explosion-3',
+    frames: [{ key: 'fireball-explosion', frame: 2 }]
+  })
 }

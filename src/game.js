@@ -174,20 +174,21 @@ function create () {
 
 export function collectItem (mario, item) {
   const { texture: { key } } = item
-  console.log(key)
-  item.destroy()
 
   if (key === 'coin' || key === 'ground-coin') {
     this.coinSound.play()
     addToScore.call(this, 200)
+    item.destroy()
     return
   } else if (key === 'supermushroom') {
     this.consumePowerUpSound.play()
-    addToScore.call(this, 1000, key)
+    addToScore.call(this, 1000, item)
+    item.destroy()
     if (mario.state > 0) return
   } else if (key === 'fire-flower') {
     this.consumePowerUpSound.play()
-    addToScore.call(this, 1000, key)
+    addToScore.call(this, 1000, item)
+    item.destroy()
     if (mario.state > 1) return
   } else {
     return

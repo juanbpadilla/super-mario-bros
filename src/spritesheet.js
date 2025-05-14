@@ -17,18 +17,6 @@ export const initSpriteSheet = ({ load }) => {
       frameHeight: 16
     },
     {
-      key: 'goomba',
-      path: 'assets/entities/overworld/goomba.png',
-      frameWidth: 16,
-      frameHeight: 16
-    },
-    {
-      key: 'coin',
-      path: 'assets/collectibles/coin.png',
-      frameWidth: 16,
-      frameHeight: 16
-    },
-    {
       key: 'mario-grown',
       path: 'assets/entities/mario-grown.png',
       frameWidth: 18,
@@ -39,6 +27,42 @@ export const initSpriteSheet = ({ load }) => {
       path: 'assets/entities/mario-fire.png',
       frameWidth: 18,
       frameHeight: 32
+    },
+    {
+      key: 'goomba',
+      path: 'assets/entities/overworld/goomba.png',
+      frameWidth: 16,
+      frameHeight: 16
+    },
+    {
+      key: 'koopa',
+      path: 'assets/entities/koopa.png',
+      frameWidth: 16,
+      frameHeight: 24
+    },
+    {
+      key: 'shell',
+      path: 'assets/entities/shell.png',
+      frameWidth: 16,
+      frameHeight: 15
+    },
+    {
+      key: 'fireball',
+      path: 'assets/entities/fireball.png',
+      frameWidth: 8,
+      frameHeight: 8
+    },
+    {
+      key: 'fireball-explosion',
+      path: 'assets/entities/fireball-explosion.png',
+      frameWidth: 16,
+      frameHeight: 16
+    },
+    {
+      key: 'coin',
+      path: 'assets/collectibles/coin.png',
+      frameWidth: 16,
+      frameHeight: 16
     },
     {
       key: 'npc',

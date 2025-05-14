@@ -3,6 +3,7 @@
 import { killMario } from '../../game.js'
 import { controlKeys, playerOptions, screenHeight, screenWidth, velocityY, worldWidth } from '../services/config.js'
 import { MARIO_ANIMATIONS } from '../services/mario_animations.js'
+import { throwFireball } from './fireball.js'
 
 export default class PlayerController {
   constructor (scene, x, y) {
@@ -16,6 +17,7 @@ export default class PlayerController {
       .setScale(screenHeight / 376)
 
     this.sprite.depth = 3
+    this.sprite.state = 2
   }
 
   update (delta) {
@@ -214,7 +216,7 @@ function checkControls (delta) {
   }
 
   if (isMarioTouchingFloor && mario.state === 2 && isFireKeyDown && !fireInCooldown) {
-    // throwFireball.call(this)
+    throwFireball.call(this)
     return
   }
 
