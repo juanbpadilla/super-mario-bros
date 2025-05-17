@@ -4,9 +4,12 @@ import {
   playerOptions,
   screenHeight,
   screenWidth,
-  worldWidth
+  worldWidth,
+  config
 } from '../services/config.js'
 import { generateRandomCoordinate } from '../services/randomCoordinate.js'
+
+const { bgColor } = config
 
 export function drawWorld () {
   const { isLevelOverworld } = playerOptions
@@ -14,7 +17,7 @@ export function drawWorld () {
   const player = this.mario
 
   // > Drawing the Sky
-  this.add.rectangle(screenWidth, 0, worldWidth, screenHeight, isLevelOverworld ? 0x8585FF : 0x000000).setOrigin(0).depth = -1
+  this.add.rectangle(screenWidth, 0, worldWidth, screenHeight, isLevelOverworld ? bgColor.overworld : bgColor.underworld).setOrigin(0).depth = -1
 
   const propsY = screenHeight - platformHeight
 

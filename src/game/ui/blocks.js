@@ -1,6 +1,7 @@
 /* global Phaser */
-import { addToScore, collectItem } from '../../game.js'
+import { collectItem } from '../../game.js'
 import { controlKeys, emptyBlocksList, screenHeight, screenWidth } from '../services/config.js'
+import { addToScore } from './hudManager.js'
 
 const mushroomsVelocityX = screenWidth / 15
 

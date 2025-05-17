@@ -4,13 +4,14 @@ import { createAnimations } from './animations.js' // Importar la función creat
 import { initAudio, initSounds } from './audio.js'
 import PlayerController from './game/player/playerController.js'
 import { drawStartScreen } from './game/ui/drawStartScreen.js'
-import { levelGravity, platformHeight, playerOptions, screenHeight, screenWidth, startOffset, velocityX, velocityY, worldWidth } from './game/services/config.js'
+import { getTextStyle, levelGravity, platformHeight, playerOptions, screenHeight, screenWidth, startOffset, velocityX, velocityY, worldWidth } from './game/services/config.js'
 import { generateLevel } from './game/ui/generateLevel.js'
 import { initImages, initSpriteSheet } from './spritesheet.js'
 import { createControls } from './game/services/controls.js'
 import { drawWorld } from './game/ui/drawWorld.js'
 import { createEnemies } from './game/ui/enemies-control.js'
 import { MARIO_ANIMATIONS } from './game/services/mario_animations.js'
+import { addToScore, updateTimer } from './game/ui/hudManager.js'
 
 const loadingGif = document.querySelectorAll('.loading-gif')
 
@@ -19,7 +20,7 @@ const config = {
   type: Phaser.AUTO, // Tipo de renderizado (WebGL o Canvas) especificado automáticamente por Phaser.
   width: screenWidth,
   height: screenHeight,
-  backgroundColor: 0x049cd8,
+  backgroundColor: 0x00000,
   parent: 'game', // ID del elemento HTML donde se renderizará el juego.
   preserveDrawingBuffer: true,
   physics: {
@@ -80,10 +81,7 @@ function preload () {
     x: width / 2,
     y: height / 2 * 1.25,
     text: '0%',
-    style: {
-      font: screenWidth / 96 + 'px pixel',
-      fill: '#ffffff'
-    }
+    style: getTextStyle({ color: '#ffffff' })
   })
   percentText.setOrigin(0.5, 0.5)
 
@@ -152,17 +150,18 @@ function create () {
 
   this.isPaused = false
 
-  this.pauseOverlay = this.add.rectangle(0, 0, config.width, config.height, 0x000000, 0.5)
+  this.pauseOverlay = this.add.rectangle(0, 0, config.width, config.height, 0x000000, 0.3)
   this.pauseOverlay.setOrigin(0, 0)
+  this.pauseOverlay.setScrollFactor(0)
   this.pauseOverlay.setVisible(this.isPaused)
-    .depth = 4
+    .depth = 6
 
-  this.pauseMenu = this.add.text(config.width / 2, config.height / 2, 'PAUSED', {
-    fontFamily: 'pixel',
-    fontSize: config.width / 20,
-    align: 'center',
-  }).setOrigin(0.5, 0.5).setVisible(this.isPaused) // Crear el menú de pausa y ocultarlo inicialmente.
-  this.pauseMenu.depth = 5
+  const textStyle = getTextStyle({ fontSize: config.width / 20, align: 'center' })
+  this.pauseMenu = this.add.text(config.width / 2, config.height / 2, 'PAUSED', textStyle)
+    .setOrigin(0.5, 0.5)
+    .setVisible(this.isPaused) // Crear el menú de pausa y ocultarlo inicialmente.
+    .setScrollFactor(0)
+  this.pauseMenu.depth = 6
   console.log(playerOptions.levelStyle)
 
   this.smoothedControls = new SmoothedHorionztalControl(0.001)
@@ -215,35 +214,8 @@ export function collectItem (mario, item) {
     this.anims.resumeAll()
     mario.isBlocked = false
     mario.state++
+    updateTimer.call(this)
   }, 1000)
-}
-
-export function addToScore (scoreAdd, origin) {
-  if (!origin) return
-  const scoreText = this.add.text(origin.getBounds().x, origin.getBounds().y, scoreAdd, {
-    fontFamily: 'pixel',
-    fontSize: (screenWidth / 150),
-    align: 'center'
-  })
-
-  scoreText.setOrigin(0).smoothed = true
-  scoreText.depth = 5
-
-  this.tweens.add({
-    targets: scoreText,
-    duration: 600,
-    y: scoreText.y - screenHeight / 6.5,
-    onComplete: () => {
-      this.tweens.add({
-        targets: scoreText,
-        duration: 100,
-        alpha: 0,
-        onComplete: () => {
-          scoreText.destroy()
-        }
-      })
-    }
-  })
 }
 
 function update (delta) {

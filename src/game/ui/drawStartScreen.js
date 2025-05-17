@@ -1,11 +1,13 @@
-import { platformHeight, screenHeight, screenWidth } from '../services/config.js'
+import { platformHeight, screenHeight, screenWidth, config } from '../services/config.js'
+
+const { bgColor } = config
 
 export function drawStartScreen () {
   const player = this.mario.sprite
   const screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2
 
   // Draw sky
-  this.add.rectangle(0, 0, screenWidth, screenHeight, 0x049cd8).setOrigin(0).depth = -1
+  this.add.rectangle(0, 0, screenWidth, screenHeight, bgColor.overworld).setOrigin(0).depth = -1
 
   const platform = this.add.tileSprite(0, screenHeight, screenWidth / 2, platformHeight, 'start-floorbricks').setScale(2).setOrigin(0, 0.5)
   this.physics.add.existing(platform)

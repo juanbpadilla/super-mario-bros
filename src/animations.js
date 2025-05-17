@@ -34,10 +34,10 @@ export function createAnimations () {
     key: 'mario-grown-walk',
     frames: anims.generateFrameNumbers(
       'mario-grown',
-      { start: 1, end: 3 } // Generar fotogramas de la animación desde el sprite Mario.
+      { start: 1, end: 3 }
     ),
-    frameRate: 12, // Velocidad de la animación (fotogramas por segundo).
-    repeat: -1, // Repetir la animación indefinidamente.
+    frameRate: 12,
+    repeat: -1,
   })
 
   anims.create({
@@ -59,9 +59,9 @@ export function createAnimations () {
     key: 'mario-fire-walk',
     frames: anims.generateFrameNumbers(
       'mario-fire',
-      { start: 1, end: 3 } // Generar fotogramas de la animación desde el sprite Mario.
+      { start: 1, end: 3 }
     ),
-    frameRate: 12, // Velocidad de la animación (fotogramas por segundo).
+    frameRate: 12,
     repeat: -1,
   })
 
@@ -78,6 +78,12 @@ export function createAnimations () {
   anims.create({
     key: 'mario-fire-throw',
     frames: [{ key: 'mario-fire', frame: 6 }],
+  })
+
+  // > Goomba animations
+  anims.create({
+    key: 'goomba-idle',
+    frames: [{ key: 'goomba', frame: 1 }]
   })
 
   anims.create({

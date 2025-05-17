@@ -3,6 +3,7 @@ import { collectItem } from '../../game.js'
 import { playerOptions, platformHeight, platformPiecesWidth, platformPieces, screenHeight, screenWidth, worldWidth, worldHolesCoords } from '../services/config.js'
 import { MARIO_ANIMATIONS } from '../services/mario_animations.js'
 import { destroyBlock, revealHiddenBlock } from './blocks.js'
+import { createHUD, updateTimer } from './hudManager.js'
 import { generateStructure } from './structures.js'
 
 export function generateLevel () {
@@ -223,8 +224,8 @@ function startLevel (player, trigger) {
     this.cameras.main.pan(screenWidth * 1.5, 0, 0)
     player.isBlocked = false
     this.cameras.main.fadeIn(500, 0, 0, 0)
-    // createHUD.call(this);
-    // updateTimer.call(this);
+    createHUD.call(this)
+    updateTimer.call(this)
     this.startScreenTrigger.destroy()
     this.levelStarted = true
     // if (this.settingsMenuOpen)hideSettings.call(this);

@@ -1,6 +1,6 @@
-import { addToScore } from '../../game.js'
 import { levelGravity, playerOptions, screenHeight, velocityX, velocityY } from '../services/config.js'
 import { MARIO_ANIMATIONS } from '../services/mario_animations.js'
+import { addToScore } from '../ui/hudManager.js'
 
 export function throwFireball () {
   const game = this.scene

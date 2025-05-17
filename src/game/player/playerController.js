@@ -3,6 +3,7 @@
 import { killMario } from '../../game.js'
 import { controlKeys, playerOptions, screenHeight, screenWidth, velocityY, worldWidth } from '../services/config.js'
 import { MARIO_ANIMATIONS } from '../services/mario_animations.js'
+import { updateTimer } from '../ui/hudManager.js'
 import { throwFireball } from './fireball.js'
 
 export default class PlayerController {
@@ -18,8 +19,6 @@ export default class PlayerController {
 
     this.sprite.depth = 3
     this.sprite.state = 2
-
-    console.log(this.sprite)
   }
 
   update (delta) {
@@ -72,6 +71,7 @@ function decreasePlayer () {
     game.physics.resume()
     game.anims.resumeAll()
     mario.isBlocked = false
+    updateTimer.call(game)
   }, 1000)
 }
 
@@ -98,29 +98,23 @@ function checkControls (delta) {
   const marioAnimations = MARIO_ANIMATIONS[mario.state]
 
   if (isPauseKeyDown) {
-    const camera = game.cameras.main
     const isPaused = !game.isPaused
     game.isPaused = isPaused
 
     game.pauseOverlay.setVisible(isPaused)
     game.pauseMenu.setVisible(isPaused)
 
-    // Pausar el juego si se presiona la tecla Escape.
-    if (isPaused) {
-      game.pauseOverlay.setPosition(camera.scrollX, camera.scrollY)
-      game.pauseMenu.setPosition(camera.scrollX + (camera.width / 2), game.pauseMenu.y)
-      game.pauseSound.play()
-    }
-
     const musicTracks = [game.musicTheme, game.undergroundMusicTheme, game.hurryMusicTheme]
     musicTracks.forEach(track => isPaused ? track.pause() : track.resume())
 
     if (isPaused) {
+      game.pauseSound.play()
       game.physics.world.pause()
       game.anims.pauseAll()
     } else {
       game.physics.world.resume()
       game.anims.resumeAll()
+      this.levelStarted && updateTimer.call(game)
     }
   }
 
@@ -241,7 +235,6 @@ function checkControls (delta) {
 
 function applyPlayerInvulnerabilityFun (time) {
   const mario = this.sprite
-  console.log(mario)
   const blinkAnim = this.scene.tweens.add({
     targets: mario,
     duration: 100,

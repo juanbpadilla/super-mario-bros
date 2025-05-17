@@ -1,6 +1,6 @@
-import { addToScore } from '../../game.js'
 import { levelGravity, platformHeight, screenHeight, screenWidth, velocityY, worldWidth } from '../services/config.js'
 import { generateRandomCoordinate } from '../services/randomCoordinate.js'
+import { addToScore } from './hudManager.js'
 /* global Phaser */
 
 const goombasVelocityX = screenWidth / 19

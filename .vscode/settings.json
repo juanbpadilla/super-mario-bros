@@ -4,5 +4,9 @@
   "prettier.semi": false,
   "prettier.enable": false,
   "prettier.htmlWhitespaceSensitivity": "strict",
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "eslint.enable": true,
+  "eslint.format.enable": true,
+  "eslint.run": "onType",
+  "javascript.format.enable": false
 }
