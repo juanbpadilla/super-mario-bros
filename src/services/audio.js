@@ -1,4 +1,4 @@
-import { playerOptions } from './game/services/config.js'
+import { playerOptions } from '../config/index.js'
 
 /* global Phaser */
 

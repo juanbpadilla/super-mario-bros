@@ -1,6 +1,6 @@
-import { levelGravity, platformHeight, screenHeight, screenWidth, velocityY, worldWidth } from '../services/config.js'
-import { generateRandomCoordinate } from '../services/randomCoordinate.js'
-import { addToScore } from './hudManager.js'
+import { levelGravity, platformHeight, screenHeight, screenWidth, velocityY, worldWidth } from '../../config/index.js'
+import { generateRandomCoordinate } from '../../utils/randomCoordinate.js'
+import { addToScore } from '../ui/hudManager.js'
 /* global Phaser */
 
 const goombasVelocityX = screenWidth / 19

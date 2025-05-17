@@ -1,4 +1,4 @@
-import { platformHeight, screenHeight, screenWidth, config } from '../services/config.js'
+import { platformHeight, screenHeight, screenWidth, config } from '../../config/index.js'
 
 const { bgColor } = config
 

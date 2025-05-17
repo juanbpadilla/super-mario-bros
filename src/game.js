@@ -1,16 +1,16 @@
 /* global Phaser */
 
-import { createAnimations } from './animations.js' // Importar la función createAnimations desde el archivo animations.js.
-import { initAudio, initSounds } from './audio.js'
-import PlayerController from './game/player/playerController.js'
-import { drawStartScreen } from './game/ui/drawStartScreen.js'
-import { getTextStyle, levelGravity, platformHeight, playerOptions, screenHeight, screenWidth, startOffset, velocityX, velocityY, worldWidth } from './game/services/config.js'
-import { generateLevel } from './game/ui/generateLevel.js'
-import { initImages, initSpriteSheet } from './spritesheet.js'
-import { createControls } from './game/services/controls.js'
-import { drawWorld } from './game/ui/drawWorld.js'
-import { createEnemies } from './game/ui/enemies-control.js'
-import { MARIO_ANIMATIONS } from './game/services/mario_animations.js'
+import { createAnimations } from './player/animations.js' // Importar la función createAnimations desde el archivo animations.js.
+import { initAudio, initSounds } from './services/audio.js'
+import PlayerController from './player/playerController.js'
+import { drawStartScreen } from './game/level/drawStartScreen.js'
+import { getTextStyle, levelGravity, platformHeight, playerOptions, screenHeight, screenWidth, startOffset, velocityX, velocityY, worldWidth } from './config/index.js'
+import { generateLevel } from './game/level/generateLevel.js'
+import { initImages, initSpriteSheet } from './services/spritesheet.js'
+import { createControls } from './utils/controls.js'
+import { drawWorld } from './game/level/drawWorld.js'
+import { createEnemies } from './game/enemies/enemies-control.js'
+import { MARIO_ANIMATIONS } from './player/mario_animations.js'
 import { addToScore, updateTimer } from './game/ui/hudManager.js'
 
 const loadingGif = document.querySelectorAll('.loading-gif')
@@ -124,7 +124,7 @@ function create () {
   }
 
   this.flagRaised = false
-  this.playerFiring = false
+  // this.playerFiring = false
   this.fireInCooldown = false
   this.furthestPlayerPos = 0
   this.levelStarted = false

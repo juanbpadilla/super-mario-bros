@@ -1,4 +1,4 @@
-import { playerOptions, screenHeight, screenWidth, config, getTextStyle } from '../services/config.js'
+import { playerOptions, screenHeight, screenWidth, config, getTextStyle } from '../../config/index.js'
 
 let { timeLeft, score } = playerOptions
 const { fSize } = config

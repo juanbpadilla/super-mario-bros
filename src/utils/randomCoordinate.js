@@ -1,5 +1,5 @@
 /* global Phaser */
-import { platformPiecesWidth, screenWidth, worldHolesCoords, worldWidth } from './config.js'
+import { platformPiecesWidth, screenWidth, worldHolesCoords, worldWidth } from '../config/index.js'
 
 export function generateRandomCoordinate (entitie = false, ground = true) {
   const startPos = entitie ? screenWidth * 1.5 : screenWidth

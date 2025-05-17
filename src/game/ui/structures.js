@@ -1,5 +1,5 @@
 /* global Phaser */
-import { playerOptions, platformHeight, screenHeight } from '../services/config.js'
+import { playerOptions, platformHeight, screenHeight } from '../../config/index.js'
 
 export function generateStructure (pieceStart) {
   const { isLevelOverworld } = playerOptions

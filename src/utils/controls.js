@@ -1,5 +1,5 @@
 /* global Phaser */
-import { controlKeys } from './config.js'
+import { controlKeys } from '../config/index.js'
 
 export function createControls () {
   const { localStorage } = window

@@ -2,7 +2,7 @@
 // isLevelOverworld = Phaser.Math.Between(0, 100) <= 84;
 // isLevelOverworld = true
 
-import { playerOptions } from './game/services/config.js'
+import { playerOptions } from '../config/index.js'
 
 // const levelStyle = isLevelOverworld ? 'overworld' : 'underground'
 // const levelStyle = 'overworld'

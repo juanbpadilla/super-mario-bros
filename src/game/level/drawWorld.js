@@ -6,8 +6,8 @@ import {
   screenWidth,
   worldWidth,
   config
-} from '../services/config.js'
-import { generateRandomCoordinate } from '../services/randomCoordinate.js'
+} from '../../config/index.js'
+import { generateRandomCoordinate } from '../../utils/randomCoordinate.js'
 
 const { bgColor } = config
 

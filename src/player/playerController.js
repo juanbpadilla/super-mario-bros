@@ -1,24 +1,24 @@
 /* global Phaser */
 
-import { killMario } from '../../game.js'
-import { controlKeys, playerOptions, screenHeight, screenWidth, velocityY, worldWidth } from '../services/config.js'
-import { MARIO_ANIMATIONS } from '../services/mario_animations.js'
-import { updateTimer } from '../ui/hudManager.js'
+import { killMario } from '../game.js'
+import { controlKeys, playerOptions, screenHeight, screenWidth, velocityY, worldWidth } from '../config/index.js'
+import { MARIO_ANIMATIONS } from './mario_animations.js'
+import { updateTimer } from '../game/ui/hudManager.js'
 import { throwFireball } from './fireball.js'
+import Mario from './Mario.js'
 
 export default class PlayerController {
   constructor (scene, x, y) {
     this.scene = scene
+    this.sprite = new Mario(scene, x, y)
 
-    this.sprite = scene.physics.add.sprite(x, y, 'mario')
+    // this.sprite.setBounce(0)
+    //   .setOrigin(1)
+    //   .setCollideWorldBounds(true)
+    //   .setScale(screenHeight / 345)
 
-    this.sprite.setBounce(0)
-      .setOrigin(1)
-      .setCollideWorldBounds(true)
-      .setScale(screenHeight / 345)
-
-    this.sprite.depth = 3
-    this.sprite.state = 2
+    // this.sprite.depth = 3
+    // this.sprite.state = 2
   }
 
   update (delta) {
@@ -76,8 +76,8 @@ function decreasePlayer () {
 }
 
 function checkControls (delta) {
-  const { playerController, timeLeft } = playerOptions
-  const { flagRaised, playerFiring, fireInCooldown } = this.scene
+  const { timeLeft } = playerOptions
+  const { flagRaised, fireInCooldown } = this.scene
   const game = this.scene
   // console.log({ flagRaised })
   const mario = this.sprite
@@ -137,7 +137,7 @@ function checkControls (delta) {
     return
   }
 
-  if (mario.body.blocked.up) { mario.setVelocityY(0) }
+  if (mario.body.blocked.up) mario.jump(0)
 
   if (mario.body.blocked.left || mario.body.blocked.right) {
     mario.setVelocityX(0)
@@ -155,67 +155,31 @@ function checkControls (delta) {
 
   if (isUpKeyDown && isMarioTouchingFloor) {
     game.jumpSound.play()
-    mario.setVelocityY((mario.state > 0 && isDownKeyDown) ? -velocityY / 1.25 : -velocityY)
+    // mario.setVelocityY((mario.state > 0 && isDownKeyDown) ? -velocityY / 1.25 : -velos cityY)
+    mario.jump((mario.state > 0 && isDownKeyDown) ? -velocityY / 1.25 : -velocityY)
   }
-
-  // > Horizontal movement and animations
-  let oldVelocityX
-  let targetVelocityX
-  let newVelocityX
 
   if (isLeftKeyDown) {
     game.smoothedControls.moveLeft(delta)
-    if (!playerFiring) {
-      mario.anims.play(marioAnimations.walk, true).flipX = true
-    }
-
-    playerController.direction.positive = false
-
-    // Lerp the velocity towards the max run using the smoothed controls.
-    // This simulates a player controlled acceleration.
-    oldVelocityX = mario.body.velocity.x
-    targetVelocityX = -playerController.speed.run
-    newVelocityX = Phaser.Math.Linear(oldVelocityX, targetVelocityX, -game.smoothedControls.value)
-
-    mario.setVelocityX(newVelocityX)
+    mario.moveLeft(game, marioAnimations.walk)
   } else if (isRightKeyDown) {
     game.smoothedControls.moveRight(delta)
-    if (!playerFiring) {
-      mario.anims.play(marioAnimations.walk, true).flipX = false
-    }
-
-    playerController.direction.positive = true
-
-    // Lerp the velocity towards the max run using the smoothed controls.
-    // This simulates a player controlled acceleration.
-    oldVelocityX = mario.body.velocity.x
-    targetVelocityX = playerController.speed.run
-    newVelocityX = Phaser.Math.Linear(oldVelocityX, targetVelocityX, game.smoothedControls.value)
-
-    mario.setVelocityX(newVelocityX)
+    mario.moveRight(game, marioAnimations.walk)
   } else {
     if (mario.body.velocity.x !== 0) { game.smoothedControls.reset() }
     if (isMarioTouchingFloor) { mario.setVelocityX(0) }
-    if (!(isUpKeyDown) && !playerFiring) {
+    if (!(isUpKeyDown) && !mario.isFiring) {
       mario.anims.play(marioAnimations.idle, true)
     }
   }
 
-  if (!playerFiring) {
+  if (!mario.isFiring) {
     if (mario.state > 0 && isDownKeyDown) {
-      mario.anims.play(marioAnimations.crouch, true)
-
-      if (isMarioTouchingFloor) {
-        mario.setVelocityX(0)
-      }
-
-      mario.body.setSize(14, 22).setOffset(2, 10)
-
+      mario.crouch(marioAnimations.crouch)
+      if (isMarioTouchingFloor) mario.setVelocityX(0)
       return
     } else {
-      if (mario.state > 0) { mario.body.setSize(14, 32).setOffset(2, 0) }
-
-      if (mario.state === 0) { mario.body.setSize(14, 16).setOffset(1.3, 0.5) }
+      mario.standUp()
     }
   }
 

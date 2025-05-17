@@ -1,10 +1,10 @@
 /* global Phaser */
 import { collectItem } from '../../game.js'
-import { playerOptions, platformHeight, platformPiecesWidth, platformPieces, screenHeight, screenWidth, worldWidth, worldHolesCoords } from '../services/config.js'
-import { MARIO_ANIMATIONS } from '../services/mario_animations.js'
-import { destroyBlock, revealHiddenBlock } from './blocks.js'
-import { createHUD, updateTimer } from './hudManager.js'
-import { generateStructure } from './structures.js'
+import { playerOptions, platformHeight, platformPiecesWidth, platformPieces, screenHeight, screenWidth, worldWidth, worldHolesCoords } from '../../config/index.js'
+import { MARIO_ANIMATIONS } from '../../player/mario_animations.js'
+import { destroyBlock, revealHiddenBlock } from '../ui/blocks.js'
+import { createHUD, updateTimer } from '../ui/hudManager.js'
+import { generateStructure } from '../ui/structures.js'
 
 export function generateLevel () {
   const { isLevelOverworld } = playerOptions

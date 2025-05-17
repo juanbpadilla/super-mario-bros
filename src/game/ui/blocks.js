@@ -1,6 +1,6 @@
 /* global Phaser */
 import { collectItem } from '../../game.js'
-import { controlKeys, emptyBlocksList, screenHeight, screenWidth } from '../services/config.js'
+import { controlKeys, emptyBlocksList, screenHeight, screenWidth } from '../../config/index.js'
 import { addToScore } from './hudManager.js'
 
 const mushroomsVelocityX = screenWidth / 15
@@ -68,8 +68,8 @@ export function revealHiddenBlock (player, block) {
       duration: 300,
       start: performance.now(),
       y: mushroom.y - (screenHeight / 20),
-      onComplete: function () {
-        if (!mushroom) { return }
+      onComplete: () => {
+        if (!mushroom) return
 
         if (Phaser.Math.Between(0, 10) <= 4) {
           mushroom.setVelocityX(mushroomsVelocityX)
