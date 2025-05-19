@@ -3,7 +3,7 @@ import { collectItem } from '../../game.js'
 import { playerOptions, platformHeight, platformPiecesWidth, platformPieces, screenHeight, screenWidth, worldWidth, worldHolesCoords } from '../../config/index.js'
 import { MARIO_ANIMATIONS } from '../../player/mario_animations.js'
 import { destroyBlock, revealHiddenBlock } from '../ui/blocks.js'
-import { createHUD, updateTimer } from '../ui/hudManager.js'
+import { addToScore, createHUD, updateTimer } from '../ui/hudManager.js'
 import { generateStructure } from '../ui/structures.js'
 
 export function generateLevel () {
@@ -191,10 +191,8 @@ export function generateLevel () {
 }
 
 function startLevel (player, trigger) {
-  // const player = this.mario
-  // console.log(player)
-  if (!player.body.blocked.right && !trigger.body.blocked.left) { return }
-  console.log('start level')
+  if (!player.body.blocked.right && !trigger.body.blocked.left) return
+
   this.powerDownSound.play()
 
   this.physics.world.setBounds(screenWidth, 0, worldWidth, screenHeight)
@@ -205,7 +203,6 @@ function startLevel (player, trigger) {
 
   const marioAnimations = MARIO_ANIMATIONS[player.state]
   player.setVelocityX(5)
-  // player.anims.play('run', true).flipX = false
   player.anims.play(marioAnimations.walk, true).flipX = false
 
   this.cameras.main.fadeOut(900, 0, 0, 0)
@@ -221,6 +218,7 @@ function startLevel (player, trigger) {
     }
 
     player.x = screenWidth * 1.1
+    // player.x = screenWidth * 9
     this.cameras.main.pan(screenWidth * 1.5, 0, 0)
     player.isBlocked = false
     this.cameras.main.fadeIn(500, 0, 0, 0)
@@ -232,4 +230,86 @@ function startLevel (player, trigger) {
   }, 1100)
 }
 
-function teleportToLevelEnd () { console.log('teleportToLevelEnd') }
+function teleportToLevelEnd (player, trigger) {
+  if (!player.body.blocked.right && !trigger.body.blocked.left) return
+
+  player.isBlocked = true
+
+  this.cameras.main.stopFollow()
+
+  this.powerDownSound.play()
+
+  this.tweens.add({
+    targets: player,
+    duration: 75,
+    alpha: 0
+  })
+
+  this.cameras.main.fadeOut(450, 0, 0, 0)
+
+  const marioAnimations = MARIO_ANIMATIONS[player.state]
+  player.anims.play(marioAnimations.walk, true).flipX = false
+
+  this.undergroundRoof.destroy()
+
+  setTimeout(() => {
+    this.physics.world.setBounds(worldWidth - screenWidth, 0, worldWidth, screenHeight)
+    this.tpTube = this.add.tileSprite(worldWidth - screenWidth / 1.089, screenHeight - platformHeight, 32, 32, 'vertical-medium-tube').setScale(screenHeight / 345).setOrigin(1)
+    this.tpTube.depth = 4
+    this.physics.add.existing(this.tpTube)
+    this.tpTube.body.allowGravity = false
+    this.tpTube.body.immovable = true
+    this.physics.add.collider(player, this.tpTube)
+    this.add.rectangle(worldWidth - screenWidth, 0, worldWidth, screenHeight, 0x8585FF).setOrigin(0).depth = -1
+    this.add.tileSprite(worldWidth - screenWidth, screenHeight, screenWidth, platformHeight, 'start-floorbricks').setScale(2).setOrigin(0, 0.5).depth = 2
+  }, 500)
+
+  setTimeout(() => {
+    player.alpha = 1
+    player.x = worldWidth - screenWidth / 1.08
+    this.cameras.main.pan(worldWidth - screenWidth / 2, 0, 0)
+    this.cameras.main.fadeIn(500, 0, 0, 0)
+    this.powerDownSound.play()
+    this.finalTrigger.destroy()
+    this.tweens.add({
+      targets: player,
+      duration: 500,
+      y: this.tpTube.getBounds().y
+    })
+    setTimeout(() => {
+      player.isBlocked = false
+    }, 500)
+  }, 1100)
+}
+
+export function raiseFlag (player) {
+  if (this.flagRaised) {
+    return false
+  }
+
+  this.cameras.main.stopFollow()
+
+  this.timeLeftText.stopped = true
+
+  this.musicTheme.stop()
+  this.undergroundMusicTheme.stop()
+  this.hurryMusicTheme.stop()
+  this.flagPoleSound.play()
+
+  this.tweens.add({
+    targets: this.finalFlag,
+    duration: 1000,
+    y: screenHeight / 2.2
+  })
+
+  setTimeout(() => {
+    this.winSound.play()
+  }, 1000)
+
+  this.flagRaised = true
+  player.isBlocked = true
+
+  addToScore.call(this, 2000, player)
+
+  return false
+}

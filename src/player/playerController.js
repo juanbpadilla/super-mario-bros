@@ -3,7 +3,7 @@
 import { killMario } from '../game.js'
 import { controlKeys, playerOptions, screenHeight, screenWidth, velocityY, worldWidth } from '../config/index.js'
 import { MARIO_ANIMATIONS } from './mario_animations.js'
-import { updateTimer } from '../game/ui/hudManager.js'
+import { updateTimer, winScreen } from '../game/ui/hudManager.js'
 import { throwFireball } from './fireball.js'
 import Mario from './Mario.js'
 
@@ -76,13 +76,10 @@ function decreasePlayer () {
 }
 
 function checkControls (delta) {
-  const { timeLeft } = playerOptions
-  const { flagRaised, fireInCooldown } = this.scene
+  const { fireInCooldown } = this.scene
   const game = this.scene
   // console.log({ flagRaised })
   const mario = this.sprite
-
-  const isMarioTouchingFloor = mario.body.touching.down
 
   const isLeftKeyDown = controlKeys.LEFT.isDown
   const isRightKeyDown = controlKeys.RIGHT.isDown
@@ -93,7 +90,7 @@ function checkControls (delta) {
   const isFireKeyDown = Phaser.Input.Keyboard.JustDown(controlKeys.FIRE)
   const isPauseKeyDown = Phaser.Input.Keyboard.JustDown(controlKeys.PAUSE)
 
-  if (mario.isDead) return
+  // if (mario.isDead) return
 
   const marioAnimations = MARIO_ANIMATIONS[mario.state]
 
@@ -118,7 +115,7 @@ function checkControls (delta) {
     }
   }
 
-  if (mario.isBlocked && flagRaised) {
+  if (mario.isBlocked && game.flagRaised) {
     mario.setVelocityX(screenWidth / 8.5)
     mario.anims.play(marioAnimations.walk, true).flipX = false
 
@@ -132,7 +129,7 @@ function checkControls (delta) {
     setTimeout(() => {
       game.gameWinned = true
       mario.destroy()
-      // winScreen.call(this);
+      winScreen.call(game)
     }, 5000)
     return
   }
@@ -144,7 +141,7 @@ function checkControls (delta) {
   }
 
   // Check if player has fallen
-  if (mario.y > screenHeight - 10 || timeLeft <= 0) {
+  if (mario.y > screenHeight - 10 || playerOptions.timeLeft <= 0) {
     game.gameOver = true
     killMario.call(game)
     // gameOverFunc.call(this);
@@ -152,6 +149,7 @@ function checkControls (delta) {
   }
 
   if (mario.isBlocked) return
+  const isMarioTouchingFloor = mario.body.touching.down
 
   if (isUpKeyDown && isMarioTouchingFloor) {
     game.jumpSound.play()

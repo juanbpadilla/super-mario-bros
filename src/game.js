@@ -11,7 +11,7 @@ import { createControls } from './utils/controls.js'
 import { drawWorld } from './game/level/drawWorld.js'
 import { createEnemies } from './game/enemies/enemies-control.js'
 import { MARIO_ANIMATIONS } from './player/mario_animations.js'
-import { addToScore, updateTimer } from './game/ui/hudManager.js'
+import { addToScore, gameOverScreen, updateTimer } from './game/ui/hudManager.js'
 
 const loadingGif = document.querySelectorAll('.loading-gif')
 
@@ -219,8 +219,11 @@ export function collectItem (mario, item) {
 }
 
 function update (delta) {
-  const { cameras, physics } = this
+  const { cameras, physics, gameOver, gameWinned } = this
   let { levelStarted, reachedLevelEnd, furthestPlayerPos } = this
+
+  if (gameOver || gameWinned) return
+
   const mario = this.mario.sprite
 
   this.mario.update(delta)
@@ -241,6 +244,11 @@ function update (delta) {
     camera.stopFollow()
     camera.isFollowing = false
   }
+
+  if (!reachedLevelEnd && !playerOptions.isLevelOverworld && camera.isFollowing && mario.x >= worldWidth - screenWidth * 1.5) {
+    reachedLevelEnd = true
+    camera.stopFollow()
+  }
 }
 
 export function killMario () {
@@ -248,6 +256,7 @@ export function killMario () {
 
   if (mario.isDead) return // Si Mario ya está muerto, no hacer nada.
 
+  this.timeLeftText.stopped = true
   mario.isDead = true
   mario.anims.play('mario-dead', true)
   mario.body.enable = false
@@ -274,9 +283,8 @@ export function killMario () {
   this.gameOverSong.play()
 
   setTimeout(() => {
-    // scene.restart() // Reiniciar la escena después de un tiempo.
     mario.depth = 0
-    // gameOverScreen.call(this, timeLeft <= 0)
+    gameOverScreen.call(this, playerOptions.timeLeft <= 0)
     this.physics.pause()
   }, 3000)
 }

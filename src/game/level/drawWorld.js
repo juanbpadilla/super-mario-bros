@@ -8,13 +8,14 @@ import {
   config
 } from '../../config/index.js'
 import { generateRandomCoordinate } from '../../utils/randomCoordinate.js'
+import { raiseFlag } from './generateLevel.js'
 
 const { bgColor } = config
 
 export function drawWorld () {
   const { isLevelOverworld } = playerOptions
   // Drawing scenery props
-  const player = this.mario
+  const player = this.mario.sprite
 
   // > Drawing the Sky
   this.add.rectangle(screenWidth, 0, worldWidth, screenHeight, isLevelOverworld ? bgColor.overworld : bgColor.underworld).setOrigin(0).depth = -1
@@ -69,7 +70,7 @@ export function drawWorld () {
   this.finalFlagMast.immovable = true
   this.finalFlagMast.allowGravity = false
   this.finalFlagMast.body.setSize(3, 167)
-  this.physics.add.overlap(player, this.finalFlagMast, null, playerOptions.raiseFlag, this)
+  this.physics.add.overlap(player, this.finalFlagMast, null, raiseFlag, this)
   this.physics.add.collider(this.platformGroup.getChildren(), this.finalFlagMast)
 
   // > Flag
