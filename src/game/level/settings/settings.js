@@ -1,4 +1,4 @@
-import { screenHeight, screenWidth, worldWidth } from '../../../config/index.js'
+import { getTextStyle, screenHeight, screenWidth, worldWidth } from '../../../config/index.js'
 import { MARIO_ANIMATIONS } from '../../../player/mario_animations.js'
 import ControlKeySettings from './controlKeySettings.js'
 
@@ -16,7 +16,6 @@ export default class SettingsMenu {
   }
 
   applySettings () {
-    console.log(this.defaultVolume())
     this.scene.sound.volume = this.defaultVolume()
     // this.scene.sound.volume = localStorage.getItem('volume') ? localStorage.getItem('volume') / 100 : 0.69
 
@@ -37,7 +36,6 @@ export default class SettingsMenu {
         effectsElems[i].setMute(isMuted)
       }
     }
-    console.log('apply Settings')
   }
 
   defaultVolume () {
@@ -59,6 +57,8 @@ export default class SettingsMenu {
     this.musicTheme.pause()
     this.pauseSound.play()
 
+    const textStyle = (fSize = screenWidth / 55) => getTextStyle({ fontSize: fSize, align: 'center' })
+
     const group = scene.add.group()
     this.settingsMenuObjects = group
 
@@ -67,13 +67,13 @@ export default class SettingsMenu {
     bg.depth = 4
     group.add(bg)
 
-    const closeButton = scene.add.text(screenWidth * 0.94, screenHeight * 0.1, 'x', { fontFamily: 'Pixel', fontSize: (screenWidth / 50), align: 'center' })
+    const closeButton = scene.add.text(screenWidth * 0.94, screenHeight * 0.1, 'x', textStyle(screenWidth / 50))
       .setInteractive()
       .on('pointerdown', () => this.hide())
     closeButton.depth = 5
     group.add(closeButton)
 
-    const settingsText = scene.add.text(screenWidth / 6, screenHeight * 0.15, 'Settings', { fontFamily: 'Pixel', fontSize: (screenWidth / 45), align: 'center' })
+    const settingsText = scene.add.text(screenWidth / 6, screenHeight * 0.15, 'Settings', textStyle(screenWidth / 45))
     settingsText.depth = 5
     group.add(settingsText)
 
@@ -90,11 +90,8 @@ export default class SettingsMenu {
       localStorage.setItem('effects-enabled', effectsCheckbox.checked)
     })
 
-    const effectsText = scene.add.text(screenWidth / 8, screenHeight / 2.3, 'Effects', {
-      fontFamily: 'Pixel',
-      fontSize: (screenWidth / 55),
-      // align: 'center'
-    }).setInteractive().on('pointerdown', () => effectsCheckbox.toggleChecked())
+    const effectsText = scene.add.text(screenWidth / 8, screenHeight / 2.3, 'Effects', textStyle())
+      .setInteractive().on('pointerdown', () => effectsCheckbox.toggleChecked())
     effectsText.setOrigin(0, 0.4).depth = 5
     group.add(effectsText)
 
@@ -112,16 +109,12 @@ export default class SettingsMenu {
       localStorage.setItem('music-enabled', musicCheckbox.checked)
     })
 
-    const musicText = scene.add.text(screenWidth / 8, screenHeight / 2.9, 'Music', {
-      fontFamily: 'Pixel',
-      fontSize: (screenWidth / 55),
-      // align: 'center'
-    }).setInteractive().on('pointerdown', () => musicCheckbox.toggleChecked())
+    const musicText = scene.add.text(screenWidth / 8, screenHeight / 2.9, 'Music', textStyle()).setInteractive().on('pointerdown', () => musicCheckbox.toggleChecked())
     musicText.setOrigin(0, 0.4).depth = 5
     group.add(musicText)
 
     // Slider: Volume
-    const sliderDot = scene.add.circle(screenWidth / 5.15, screenHeight / 1.6, screenWidth / 115, 0xffffff, 0.75)
+    const sliderDot = scene.add.circle(screenWidth / 5.15, screenHeight / 1.6, screenWidth / 115, 0xffffff, 0.75).setInteractive({ useHandCursor: true })
     // const defaultVolume = localStorage.getItem('volume') ? parseFloat(localStorage.getItem('volume')) / 100 : 0.69
     const defaultVolume = this.defaultVolume()
     sliderDot.slider = scene.plugins.get('rexsliderplugin').add(sliderDot, {
@@ -139,19 +132,11 @@ export default class SettingsMenu {
     sliderBar.depth = 4
     group.add(sliderBar)
 
-    const sliderText = scene.add.text(screenWidth / 5.15, screenHeight / 1.85, 'General volume', {
-      fontFamily: 'Pixel',
-      fontSize: (screenWidth / 60),
-      align: 'center'
-    }).setOrigin(0.5, 0)
+    const sliderText = scene.add.text(screenWidth / 5.15, screenHeight / 1.85, 'General volume', textStyle(screenWidth / 60)).setOrigin(0.5, 0)
     sliderText.depth = 5
     group.add(sliderText)
 
-    const volumeText = scene.add.text(screenWidth / 5.15, screenHeight / 1.5, Math.trunc(defaultVolume * 100), {
-      fontFamily: 'Pixel',
-      fontSize: (screenWidth / 80),
-      align: 'center'
-    }).setOrigin(0.5, 0)
+    const volumeText = scene.add.text(screenWidth / 5.15, screenHeight / 1.5, Math.trunc(defaultVolume * 100), textStyle(screenWidth / 80)).setOrigin(0.5, 0)
     volumeText.depth = 5
     group.add(volumeText)
 
@@ -173,25 +158,24 @@ export default class SettingsMenu {
     group.add(line)
 
     // Controles
-    const controlsText = scene.add.text(screenWidth / 1.5, screenHeight * 0.15, 'Controls', {
-      fontFamily: 'Pixel',
-      fontSize: (screenWidth / 45),
-      align: 'center'
-    })
+    const controlsText = scene.add.text(screenWidth / 1.5, screenHeight * 0.15, 'Controls', textStyle(screenWidth / 45))
     controlsText.depth = 5
     group.add(controlsText)
 
-    const keySettings = new ControlKeySettings(scene, screenWidth, screenHeight, this.settingsMenuObjects)
+    const keySettings = new ControlKeySettings(scene, screenWidth, screenHeight, this.settingsMenuObjects, textStyle())
     keySettings.create()
 
-    const restoreText = scene.add.text(screenWidth * 0.8, screenHeight * 0.85, 'Restore', {
-      fontFamily: 'Pixel',
-      fontSize: (screenWidth / 60),
-      // align: 'right'
-    }).setInteractive()
+    const restoreText = scene.add.text(screenWidth * 0.8, screenHeight * 0.85, 'Restore', textStyle(screenWidth / 60))
+      .setInteractive({ useHandCursor: true })
       .on('pointerdown', () => keySettings.restore())
+    restoreText.on('pointerover', () => {
+      restoreText.setColor('#8d8d8d')
+    }).on('pointerout', () => {
+      restoreText.setColor('#fff')
+    })
     restoreText.depth = 5
     group.add(restoreText)
+    console.log(restoreText)
   }
 
   hide () {

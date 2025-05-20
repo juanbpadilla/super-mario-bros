@@ -6,7 +6,7 @@ import { specialCharMap } from '../../../utils/controls.js'
 const { localStorage, alert } = window
 
 export default class ControlKeySettings {
-  constructor (scene, screenWidth, screenHeight, settingsMenuObjects) {
+  constructor (scene, screenWidth, screenHeight, settingsMenuObjects, textStyle) {
     this.scene = scene
     this.screenWidth = screenWidth
     this.screenHeight = screenHeight
@@ -14,6 +14,7 @@ export default class ControlKeySettings {
     this.controlKeys = controlKeys
     this.specialCharMap = specialCharMap
     this.defaultKeys = defaultKeys
+    this.textStyle = textStyle
 
     this.controlsConfig = [
       {
@@ -76,11 +77,7 @@ export default class ControlKeySettings {
         this.screenWidth / cfg.textPos[0],
         this.screenHeight / cfg.textPos[1],
         this.displayChar(keyCode),
-        {
-          fontFamily: 'Pixel',
-          fontSize: this.screenWidth / 55,
-          align: 'center',
-        }
+        this.textStyle
       ).setInteractive().setOrigin(0.5, 0.4).setDepth(5)
       text.name = cfg.control
 
