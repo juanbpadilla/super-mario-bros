@@ -84,3 +84,12 @@ export const controlKeys = {
   PAUSE: null
 
 }
+
+export const defaultKeys = {
+  JUMP: null,
+  DOWN: null,
+  LEFT: null,
+  RIGHT: null,
+  FIRE: null,
+  PAUSE: null
+}

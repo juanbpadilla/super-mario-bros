@@ -13,6 +13,8 @@ export function drawStartScreen () {
   this.physics.add.existing(platform)
   platform.body.immovable = true
   platform.body.allowGravity = false
+  platform.isPlatform = true
+  platform.depth = 2
   // Apply player collision with platform
   this.physics.add.collider(player, platform)
 
@@ -47,6 +49,7 @@ export function drawStartScreen () {
   this.customBlock.anims.play('custom-block-default')
   this.physics.add.collider(player, this.customBlock, function () {
     // if (player.body.blocked.up) showSettings.call(this)
+    if (player.body.blocked.up) this.settings.show()
   }, null, this)
   this.physics.add.existing(this.customBlock)
   this.customBlock.body.allowGravity = false
@@ -56,7 +59,8 @@ export function drawStartScreen () {
     .setScale(screenHeight / 13000)
     .setInteractive().on('pointerdown', () =>
       // showSettings.call(this)
-      console.log('pointerdown')
+      this.settings.show()
+      // console.log('pointerdown')
     )
 
   this.add.image(screenCenterX * 1.12, screenHeight - (platformHeight * 1.5), 'settings-bubble').setScale(screenHeight / 620)

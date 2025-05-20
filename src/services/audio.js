@@ -101,7 +101,7 @@ export const initSounds = (game) => {
   game.effectsGroup = game.add.group()
 
   game.musicTheme = game.sound.add('music', { volume: 0.2 })
-  // game.musicTheme.play({ loop: -1 })
+  game.musicTheme.play({ loop: -1 })
   game.musicGroup.add(game.musicTheme)
 
   game.undergroundMusicTheme = game.sound.add('underground-music', { volume: 0.2 })
@@ -116,7 +116,7 @@ export const initSounds = (game) => {
   game.winSound = game.sound.add('win', { volume: 0.2 })
   game.musicGroup.add(game.winSound)
 
-  game.jumpSound = game.sound.add('jumpsound', { volume: 0.10 })
+  game.jumpSound = game.sound.add('jumpsound', { volume: 0.12 })
   game.effectsGroup.add(game.jumpSound)
 
   game.coinSound = game.sound.add('coin-pickup', { volume: 0.2 })

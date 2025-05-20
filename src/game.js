@@ -4,7 +4,7 @@ import { createAnimations } from './player/animations.js' // Importar la funció
 import { initAudio, initSounds } from './services/audio.js'
 import PlayerController from './player/playerController.js'
 import { drawStartScreen } from './game/level/drawStartScreen.js'
-import { getTextStyle, levelGravity, platformHeight, playerOptions, screenHeight, screenWidth, startOffset, velocityX, velocityY, worldWidth } from './config/index.js'
+import { controlKeys, getTextStyle, levelGravity, platformHeight, playerOptions, screenHeight, screenWidth, startOffset, velocityX, velocityY, worldWidth } from './config/index.js'
 import { generateLevel } from './game/level/generateLevel.js'
 import { initImages, initSpriteSheet } from './services/spritesheet.js'
 import { createControls } from './utils/controls.js'
@@ -12,6 +12,7 @@ import { drawWorld } from './game/level/drawWorld.js'
 import { createEnemies } from './game/enemies/enemies-control.js'
 import { MARIO_ANIMATIONS } from './player/mario_animations.js'
 import { addToScore, gameOverScreen, updateTimer } from './game/ui/hudManager.js'
+import SettingsMenu from './game/level/settings/settings.js'
 
 const loadingGif = document.querySelectorAll('.loading-gif')
 
@@ -101,6 +102,11 @@ function preload () {
   // Load Fonts
   this.load.bitmapFont('carrier_command', 'assets/fonts/carrier_command.png', 'assets/fonts/carrier_command.xml')
 
+  // this.load.plugin('rexvirtualjoystickplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js', true)
+  this.load.plugin('rexcheckboxplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexcheckboxplugin.min.js', true)
+  this.load.plugin('rexsliderplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexsliderplugin.min.js', true)
+  // this.load.plugin('rexkawaseblurpipelineplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexkawaseblurpipelineplugin.min.js', true)
+
   playerOptions.setLevel(Phaser.Math.Between(0, 100) <= 84)
   playerOptions.setLevelStyle()
 
@@ -147,6 +153,18 @@ function create () {
   createEnemies.call(this)
 
   createControls.call(this)
+
+  this.settings = new SettingsMenu(this, {
+    musicTheme: this.musicTheme,
+    pauseSound: this.pauseSound,
+    controlKeys,
+    // onClose: () => {
+    //   console.log('Menú cerrado')
+    // }
+  })
+
+  this.settings.applySettings()
+  // this.settings.show()
 
   this.isPaused = false
 

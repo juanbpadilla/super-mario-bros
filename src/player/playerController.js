@@ -153,6 +153,8 @@ function checkControls (delta) {
 
   if (isUpKeyDown && isMarioTouchingFloor) {
     game.jumpSound.play()
+    console.log(game.jumpSound.volume)
+    console.log(game.sound.volume)
     // mario.setVelocityY((mario.state > 0 && isDownKeyDown) ? -velocityY / 1.25 : -velos cityY)
     mario.jump((mario.state > 0 && isDownKeyDown) ? -velocityY / 1.25 : -velocityY)
   }
